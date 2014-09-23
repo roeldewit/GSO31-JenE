@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author HP user
+ * @author Joris Douven
  */
 public class TimeUnitTest {
 
@@ -55,8 +55,28 @@ public class TimeUnitTest {
      * @param h 0≤h≤23
      * @param m 0≤m≤59
      */
-    @Test (expected = InvalidParameterException.class)
+    @Test (expected = IllegalArgumentException.class)
     public void testExistingDate() {
-        Time time = new Time(y, m, d, h, min)
+        Time time = null;
+        //Test normal values
+        time = new Time(2014, 06, 18, 20, 36);
+        assertNotNull(time);
+        time = null;
+        //Test wrong month
+        time = new Time(2014, 13, 18, 20, 36);
+        assertNotNull(time);
+        time = null;
+        //Test wrong day
+        time = new Time(2014, 06, 53, 20, 36);
+        assertNotNull(time);
+        time = null;
+        //Test wrong hour
+        time = new Time(2014, 06, 18, 25, 36);
+        assertNotNull(time);
+        time = null;
+        //Test wrong minutes
+        time = new Time(2014, 06, 18, 20, 66);
+        assertNotNull(time);
+        time = null;
     }
 }
