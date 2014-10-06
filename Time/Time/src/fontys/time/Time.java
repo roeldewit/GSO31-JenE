@@ -5,7 +5,10 @@
  */
 package fontys.time;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -13,7 +16,7 @@ import java.util.*;
  */
 public class Time implements ITime {
 
-    private Calendar calendar;
+    private final Calendar calendar;
 
     /**
      * creation of a Time-object with year y, month m, day d, hours h and
@@ -27,9 +30,10 @@ public class Time implements ITime {
      * @param min 0≤m≤59
      */
     public Time(int y, int m, int d, int h, int min) {
+        calendar = new GregorianCalendar();
         calendar.set(GregorianCalendar.YEAR, y);
         if (m <= 12 && m >= 1) {
-            calendar.set(GregorianCalendar.MONTH, m);
+            calendar.set(GregorianCalendar.MONTH, m - 1);
         } else {
             throw new IllegalArgumentException("m not 1≤m≤12");
         }
@@ -48,6 +52,8 @@ public class Time implements ITime {
         } else {
             throw new IllegalArgumentException("min not 0≤h≤59");
         }
+        calendar.clear(GregorianCalendar.SECOND);
+        calendar.clear(GregorianCalendar.MILLISECOND);
     }
 
     /**
@@ -65,7 +71,7 @@ public class Time implements ITime {
      */
     @Override
     public int getMonth() {
-        return calendar.get(GregorianCalendar.MONTH);
+        return calendar.get(GregorianCalendar.MONTH) + 1;
     }
 
     /**
@@ -127,12 +133,26 @@ public class Time implements ITime {
      */
     @Override
     public int difference(ITime time) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yy/MM/dd HH:mm");
+            Date d1 = calendar.getTime();
+            Date d2 = format.parse(time.getYear() + "/"
+                    + time.getMonth() + "/"
+                    + time.getDay() + " "
+                    + time.getHours() + ":"
+                    + time.getMinutes());
+            long diff = d1.getTime() - d2.getTime();
+            return (int) TimeUnit.MILLISECONDS.toMinutes(diff);
+        } catch (ParseException ex) {
+            System.out.println("Error parsing: " + ex.toString());
+            return -1;
+        }
     }
 
     @Override
     public int compareTo(ITime o) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Calendar c = new GregorianCalendar(o.getYear(), o.getMonth(), o.getDay(), o.getHours(), o.getMinutes());
+        return calendar.compareTo(c);
     }
 
 }
