@@ -7,73 +7,227 @@ package fontys.time;
 
 /**
  *
+ * A stretch of time with a begin time and end time. The end time is always
+ * later then the begin time; the length of the period is always positive
+ *
+ *
+ * WARNING: length of period should be smaller than Integer.MAXINT; this
+ * restriction will never be checked
+ *
  * @author Eric
  */
-public class Period implements IPeriod{
-    
+public class Period implements IPeriod {
+
+    private ITime bt;
+    private ITime et;
+
     public Period(ITime bt, ITime et)
     {
-        
+        if (bt.compareTo(et) > 0)
+        {
+            this.bt = bt;
+            this.et = et;
+        }
+        else
+        {
+            //foutmelding
+        }
+
     }
 
+    /**
+     *
+     * @return the begin time of this period
+     */
     @Override
     public ITime getBeginTime()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return bt;
     }
 
+    /**
+     *
+     * @return the end time of this period
+     */
     @Override
     public ITime getEndTime()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return et;
     }
 
+    /**
+     *
+     * @return the length of this period expressed in minutes (always positive)
+     */
     @Override
     public int length()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return bt.difference(et);
     }
 
+    /**
+     * beginTime will be the new begin time of this period
+     *
+     * @param beginTime must be earlier than the current end time of this period
+     */
     @Override
     public void setBeginTime(ITime beginTime)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (beginTime.compareTo(et) < 0)
+        {
+            bt = beginTime;
+        }
+        else
+        {
+            //foutmelding
+        }
     }
 
+    /**
+     * endTime will be the new end time of this period
+     *
+     * @param endTime must be later than the current begin time of this period
+     */
     @Override
     public void setEndTime(ITime endTime)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (endTime.compareTo(bt) > 0)
+        {
+            et = endTime;
+        }
+        else
+        {
+            //foutmelding
+        }
     }
 
+    /**
+     * the begin and end time of this period will be moved up both with
+     * [minutes] minutes
+     *
+     * @param minutes (a negative value is allowed)
+     */
     @Override
     public void move(int minutes)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        bt.plus(minutes);
+        et.plus(minutes);
     }
 
+    /**
+     * the end time of this period will be moved up with [minutes] minutes
+     *
+     * @param minutes minutes + length of this period must be positive
+     */
     @Override
     public void changeLengthWith(int minutes)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (et.plus(minutes).compareTo(bt) > 0)
+        {
+            et.plus(minutes);
+        }
+        else
+        {
+            //fout melding
+        }
     }
 
+    /**
+     *
+     * @param period
+     * @return true if all moments within this period are included within
+     * [period], otherwise false
+     */
     @Override
     public boolean isPartOf(IPeriod period)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (bt.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
+    /**
+     *
+     * @param period
+     * @return if this period and [period] are consecutive or possess a common
+     * intersection, then the smallest period p will be returned, for which this
+     * period and [period] are part of p, otherwise null will be returned
+     */
+    
+    // kleinste stuk returnen
     @Override
     public IPeriod unionWith(IPeriod period)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Period p;
+
+        //kijkt of de periods opeenvolgend zijn, zo ja dan wordt de kleinste period gereturnd
+        if (bt.compareTo(period.getEndTime()) == 0 || et.compareTo(period.getBeginTime()) == 0)
+        {
+            if (this.length() > period.length())
+            {
+                return this;
+            }
+            else if (this.length() < period.length())
+            {
+                return period;
+            }
+            else
+            {
+                //periods zijn even groot
+                return null;
+            }
+        }
+        // deze periode ligt voor [period] en is een intersetc
+        else if (bt.compareTo(period.getBeginTime()) < 0 && (et.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0))
+        {
+            p = new Period(period.getBeginTime(), et);
+            return p;
+        }
+        // deze periode ligt na [period] en is een intersect
+        else if ((bt.compareTo(period.getBeginTime()) > 0 && bt.compareTo(period.getEndTime()) < 0) && et.compareTo(period.getEndTime()) > 0)
+        {
+            p = new Period(bt, period.getEndTime());
+            return p;
+        }
+        else
+        {
+            return null;
+        }
     }
 
+    /**
+     *
+     * @param period
+     * @return the largest period which is part of this period and [period] will
+     * be returned; if the intersection is empty null will be returned
+     */
+    
+    //grootste stuk returnen?
     @Override
     public IPeriod intersectionWith(IPeriod period)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Period p;
+        // deze periode ligt voor [period] en is een intersetc
+        if (bt.compareTo(period.getBeginTime()) < 0 && (et.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0))
+        {
+            p = new Period(bt, period.getEndTime());
+            return p;
+        }
+        // deze periode ligt na [period] en is een intersect
+        else if ((bt.compareTo(period.getBeginTime()) > 0 && bt.compareTo(period.getEndTime()) < 0) && et.compareTo(period.getEndTime()) > 0)
+        {
+            p = new Period(period.getBeginTime(), et);
+            return p;
+        }
+        else
+        {
+            return null;
+        }
     }
-    
+
 }
