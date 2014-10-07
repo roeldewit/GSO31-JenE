@@ -62,7 +62,7 @@ public class Period implements IPeriod {
     @Override
     public int length()
     {
-        return bt.difference(et);
+        return et.difference(bt);
     }
 
     /**
@@ -93,11 +93,11 @@ public class Period implements IPeriod {
     {
         if (endTime.compareTo(bt) > 0)
         {
-            et = endTime;
+            et = et = endTime;
         }
         else
         {
-            throw new IllegalArgumentException("end timemust is not later than the current begin time");
+            throw new IllegalArgumentException("end time must not be later than the current begin time");
         }
     }
 
@@ -110,8 +110,8 @@ public class Period implements IPeriod {
     @Override
     public void move(int minutes)
     {
-        bt.plus(minutes);
-        et.plus(minutes);
+        bt = bt.plus(minutes);
+        et = et.plus(minutes);
     }
 
     /**

@@ -25,7 +25,7 @@ public class PeriodUnitTest {
     @Test
     public void testCreationPeriod()
     {
-        Period period = null;
+        IPeriod period = null;
 
         //Normale waardes worden getest
         ITime bt = new Time(1993, 8, 20, 23, 12);
@@ -101,11 +101,80 @@ public class PeriodUnitTest {
      *
      * @return the length of this period expressed in minutes (always positive)
      */
+    
+    @Test
+    public void TestLength()
+    {
+        IPeriod period;
+        ITime bt;
+        ITime et;
+        
+        //verschil is 10 min
+        bt = new Time(2014, 8, 20, 23, 12);
+        et = new Time(2014, 8, 20, 23, 22);
+        period = new Period(bt, et);
+        
+        Assert.assertEquals(10, period.length());
+        
+        bt = null;
+        et = null;
+        period = null;
+        
+        //verschil is een jaar (525.600) min
+        bt = new Time(2014, 8, 20, 23, 12);
+        et = new Time(2015, 8, 20, 23, 12);
+        period = new Period(bt, et);
+        Assert.assertEquals(525600, period.length());
+        
+    }
     /**
      * beginTime will be the new begin time of this period
      *
      * @param beginTime must be earlier than the current end time of this period
      */
+    
+    @Test
+    public void testNewBeginTime()
+    {
+        //werkende waarde
+        IPeriod period;
+        ITime bt;
+        ITime et;
+        
+        bt = new Time(2014, 8, 20, 23, 12);
+        et = new Time(2015, 8, 20, 23, 12);
+        
+        period = new Period(bt, et);
+        try{
+           period.setBeginTime(new Time(2014 ,9, 20, 23, 12)); 
+            Assert.assertNotNull(period);
+        }
+        catch(IllegalArgumentException ex)
+        {
+            fail("beginTijd is niet eerder dan eindtijd");
+        }
+        
+        //nieuwe begintijd is later dan eindtijd
+        try{
+            period.setBeginTime(new Time(2015, 9, 20, 23, 12));
+            fail("begintijd mag niet later zijn dan eindtijd");
+        }
+        catch(IllegalArgumentException ex)
+        {
+            Assert.assertTrue(true);
+        }
+        
+        //nieuwe begintijd is hetzelfde als de eindtijd
+        try{
+            period.setBeginTime(new Time(2015, 8, 20, 23, 12));
+            fail("begintijd mag niet gelijk zijn aan de eindtijd");
+        }
+        catch(IllegalArgumentException ex)
+        {
+            Assert.assertTrue(true);
+        }
+        
+    }
     /**
      * endTime will be the new end time of this period
      *
