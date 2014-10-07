@@ -14,7 +14,7 @@ package fontys.time;
  * WARNING: length of period should be smaller than Integer.MAXINT; this
  * restriction will never be checked
  *
- * @author Eric
+ * @author Eric de Regter
  */
 public class Period implements IPeriod {
 
@@ -30,7 +30,7 @@ public class Period implements IPeriod {
         }
         else
         {
-            //foutmelding
+            throw new IllegalArgumentException("bt is later than et");
         }
 
     }
@@ -80,6 +80,7 @@ public class Period implements IPeriod {
         else
         {
             //foutmelding
+            throw new IllegalArgumentException("begin time is not earlier than the current end time");
         }
     }
 
@@ -97,7 +98,7 @@ public class Period implements IPeriod {
         }
         else
         {
-            //foutmelding
+            throw new IllegalArgumentException("end timemust is not later than the current begin time");
         }
     }
 
@@ -128,7 +129,7 @@ public class Period implements IPeriod {
         }
         else
         {
-            //fout melding
+            throw new IllegalArgumentException("Period will be negative");
         }
     }
 
@@ -158,40 +159,44 @@ public class Period implements IPeriod {
      * intersection, then the smallest period p will be returned, for which this
      * period and [period] are part of p, otherwise null will be returned
      */
-    
-    // kleinste stuk returnen
     @Override
     public IPeriod unionWith(IPeriod period)
     {
         Period p;
 
         //kijkt of de periods opeenvolgend zijn, zo ja dan wordt de kleinste period gereturnd
-        if (bt.compareTo(period.getEndTime()) == 0 || et.compareTo(period.getBeginTime()) == 0)
-        {
-            if (this.length() > period.length())
-            {
-                return this;
-            }
-            else if (this.length() < period.length())
-            {
-                return period;
-            }
-            else
-            {
-                //periods zijn even groot
-                return null;
-            }
-        }
-        // deze periode ligt voor [period] en is een intersetc
-        else if (bt.compareTo(period.getBeginTime()) < 0 && (et.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0))
+        if (bt.compareTo(period.getEndTime()) == 0)
         {
             p = new Period(period.getBeginTime(), et);
+            return p;
+        }
+        else if(et.compareTo(period.getBeginTime()) == 0)
+        {
+            p = new Period(bt, period.getEndTime());
+            return p;
+        }
+        // deze periode ligt voor [period] en is een intersect
+        else if (bt.compareTo(period.getBeginTime()) < 0 && (et.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0))
+        {
+            p = new Period(bt, period.getEndTime());
             return p;
         }
         // deze periode ligt na [period] en is een intersect
         else if ((bt.compareTo(period.getBeginTime()) > 0 && bt.compareTo(period.getEndTime()) < 0) && et.compareTo(period.getEndTime()) > 0)
         {
-            p = new Period(bt, period.getEndTime());
+            p = new Period(period.getBeginTime(), et);
+            return p;
+        }
+        // [period] ligt helemaal in deze period
+        else if(bt.compareTo(period.getBeginTime()) < 0 && et.compareTo(period.getEndTime()) > 0)
+        {
+            p = new Period(bt, et);
+            return p;
+        }
+        // deze period ligt helemaal in [period]
+        else if(bt.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0)
+        {
+            p = new Period(period.getBeginTime(), period.getEndTime());
             return p;
         }
         else
@@ -206,22 +211,32 @@ public class Period implements IPeriod {
      * @return the largest period which is part of this period and [period] will
      * be returned; if the intersection is empty null will be returned
      */
-    
-    //grootste stuk returnen?
     @Override
     public IPeriod intersectionWith(IPeriod period)
     {
         Period p;
-        // deze periode ligt voor [period] en is een intersetc
+        // deze periode ligt voor [period] en is een intersect
         if (bt.compareTo(period.getBeginTime()) < 0 && (et.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0))
         {
-            p = new Period(bt, period.getEndTime());
+            p = new Period(period.getBeginTime(), et);
             return p;
         }
         // deze periode ligt na [period] en is een intersect
         else if ((bt.compareTo(period.getBeginTime()) > 0 && bt.compareTo(period.getEndTime()) < 0) && et.compareTo(period.getEndTime()) > 0)
         {
             p = new Period(period.getBeginTime(), et);
+            return p;
+        }
+        //[period] ligt helemaal in deze period
+        else if(bt.compareTo(period.getBeginTime()) < 0 && et.compareTo(period.getEndTime()) > 0)
+        {
+            p = new Period(period.getBeginTime(), period.getEndTime());
+            return p;
+        }
+        // deze period ligt helemaal in [period]
+        else if(bt.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0)
+        {
+            p = new Period(bt, et);
             return p;
         }
         else
