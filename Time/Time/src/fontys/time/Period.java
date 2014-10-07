@@ -21,11 +21,15 @@ public class Period implements IPeriod {
     private ITime bt;
     private ITime et;
 
-    public Period(ITime bt, ITime et) {
-        if (bt.compareTo(et) < 0) {
+    public Period(ITime bt, ITime et)
+    {
+        if (bt.compareTo(et) < 0)
+        {
             this.bt = bt;
             this.et = et;
-        } else {
+        }
+        else
+        {
             throw new IllegalArgumentException("bt is later than et");
         }
 
@@ -36,7 +40,8 @@ public class Period implements IPeriod {
      * @return the begin time of this period
      */
     @Override
-    public ITime getBeginTime() {
+    public ITime getBeginTime()
+    {
         return bt;
     }
 
@@ -45,7 +50,8 @@ public class Period implements IPeriod {
      * @return the end time of this period
      */
     @Override
-    public ITime getEndTime() {
+    public ITime getEndTime()
+    {
         return et;
     }
 
@@ -64,10 +70,14 @@ public class Period implements IPeriod {
      * @param beginTime must be earlier than the current end time of this period
      */
     @Override
-    public void setBeginTime(ITime beginTime) {
-        if (beginTime.compareTo(et) < 0) {
+    public void setBeginTime(ITime beginTime)
+    {
+        if (beginTime.compareTo(et) < 0)
+        {
             bt = beginTime;
-        } else {
+        }
+        else
+        {
             throw new IllegalArgumentException("begin time is not earlier than the current end time");
         }
     }
@@ -107,10 +117,14 @@ public class Period implements IPeriod {
      * @param minutes minutes + length of this period must be positive
      */
     @Override
-    public void changeLengthWith(int minutes) {
-        if (et.plus(minutes).compareTo(bt) > 0) {
+    public void changeLengthWith(int minutes)
+    {
+        if (et.plus(minutes).compareTo(bt) > 0)
+        {
             et = et.plus(minutes);
-        } else {
+        }
+        else
+        {
             throw new IllegalArgumentException("Period will be negative");
         }
     }
@@ -122,7 +136,8 @@ public class Period implements IPeriod {
      * [period], otherwise false
      */
     @Override
-    public boolean isPartOf(IPeriod period) {
+    public boolean isPartOf(IPeriod period)
+    {
         return bt.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0;
     }
 
@@ -134,33 +149,44 @@ public class Period implements IPeriod {
      * period and [period] are part of p, otherwise null will be returned
      */
     @Override
-    public IPeriod unionWith(IPeriod period) {
+    public IPeriod unionWith(IPeriod period)
+    {
         Period p;
 
         //kijkt of de periods opeenvolgend zijn, zo ja dan wordt de kleinste period gereturnd
-        if (bt.compareTo(period.getEndTime()) == 0) {
+        if (bt.compareTo(period.getEndTime()) == 0)
+        {
             p = new Period(period.getBeginTime(), et);
             return p;
-        } else if (et.compareTo(period.getBeginTime()) == 0) {
+        }
+        else if (et.compareTo(period.getBeginTime()) == 0)
+        {
             p = new Period(bt, period.getEndTime());
             return p;
-        } // deze periode ligt voor [period] en is een intersect
-        else if (bt.compareTo(period.getBeginTime()) < 0 && (et.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0)) {
+        }
+        // deze periode ligt voor [period] en is een intersect
+        else if (bt.compareTo(period.getBeginTime()) < 0 && (et.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0))
+        {
             p = new Period(bt, period.getEndTime());
             return p;
         } // deze periode ligt na [period] en is een intersect
-        else if ((bt.compareTo(period.getBeginTime()) > 0 && bt.compareTo(period.getEndTime()) < 0) && et.compareTo(period.getEndTime()) > 0) {
+        else if ((bt.compareTo(period.getBeginTime()) > 0 && bt.compareTo(period.getEndTime()) < 0) && et.compareTo(period.getEndTime()) > 0)
+        {
             p = new Period(period.getBeginTime(), et);
             return p;
         } // [period] ligt helemaal in deze period
-        else if (bt.compareTo(period.getBeginTime()) < 0 && et.compareTo(period.getEndTime()) > 0) {
+        else if (bt.compareTo(period.getBeginTime()) < 0 && et.compareTo(period.getEndTime()) > 0)
+        {
             p = new Period(bt, et);
             return p;
         } // deze period ligt helemaal in [period]
-        else if (bt.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0) {
+        else if (bt.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0)
+        {
             p = new Period(period.getBeginTime(), period.getEndTime());
             return p;
-        } else {
+        }
+        else
+        {
             return null;
         }
     }
@@ -172,25 +198,35 @@ public class Period implements IPeriod {
      * be returned; if the intersection is empty null will be returned
      */
     @Override
-    public IPeriod intersectionWith(IPeriod period) {
+    public IPeriod intersectionWith(IPeriod period)
+    {
+        int i = bt.compareTo(period.getBeginTime());
+        i = et.compareTo(period.getEndTime());
+        
         Period p;
         // deze periode ligt voor [period] en is een intersect
-        if (bt.compareTo(period.getBeginTime()) < 0 && (et.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0)) {
+        if (bt.compareTo(period.getBeginTime()) < 0 && (et.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0))
+        {
             p = new Period(period.getBeginTime(), et);
             return p;
         } // deze periode ligt na [period] en is een intersect
-        else if ((bt.compareTo(period.getBeginTime()) > 0 && bt.compareTo(period.getEndTime()) < 0) && et.compareTo(period.getEndTime()) > 0) {
-            p = new Period(period.getBeginTime(), et);
+        else if ((bt.compareTo(period.getBeginTime()) > 0 && bt.compareTo(period.getEndTime()) < 0) && et.compareTo(period.getEndTime()) > 0)
+        {
+            p = new Period(bt, period.getEndTime());
             return p;
         } //[period] ligt helemaal in deze period
-        else if (bt.compareTo(period.getBeginTime()) < 0 && et.compareTo(period.getEndTime()) > 0) {
+        else if (bt.compareTo(period.getBeginTime()) < 0 && et.compareTo(period.getEndTime()) > 0)
+        {
             p = new Period(period.getBeginTime(), period.getEndTime());
             return p;
         } // deze period ligt helemaal in [period]
-        else if (bt.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0) {
+        else if (bt.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0)
+        {
             p = new Period(bt, et);
             return p;
-        } else {
+        }
+        else
+        {
             return null;
         }
     }
