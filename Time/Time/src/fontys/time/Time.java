@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  *
- * @author HP user
+ * @author Joris Douven
  */
 public class Time implements ITime {
 
