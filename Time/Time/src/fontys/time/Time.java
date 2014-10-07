@@ -152,6 +152,8 @@ public class Time implements ITime {
     @Override
     public int compareTo(ITime o) {
         Calendar c = new GregorianCalendar(o.getYear(), o.getMonth(), o.getDay(), o.getHours(), o.getMinutes());
+        c.clear(GregorianCalendar.SECOND);
+        c.clear(GregorianCalendar.MILLISECOND);
         return calendar.compareTo(c);
     }
 
