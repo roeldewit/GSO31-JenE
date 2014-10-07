@@ -25,7 +25,7 @@ public class PeriodUnitTest {
     @Test
     public void testCreationPeriod()
     {
-        Period period = null;
+        IPeriod period = null;
 
         //Normale waardes worden getest
         ITime bt = new Time(1993, 8, 20, 23, 12);

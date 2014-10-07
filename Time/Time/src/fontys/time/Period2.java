@@ -7,28 +7,31 @@ package fontys.time;
 
 /**
  *
- * A stretch of time with a begin time and end time. The end time is always
- * later then the begin time; the length of the period is always positive
- *
- *
- * WARNING: length of period should be smaller than Integer.MAXINT; this
- * restriction will never be checked
- *
- * @author Eric de Regter
+ * @author HP user
  */
-public class Period implements IPeriod {
+public class Period2 implements IPeriod {
 
     private ITime bt;
-    private ITime et;
+    private long duration;
 
-    public Period(ITime bt, ITime et) {
+    /**
+     *
+     * A stretch of time with a begin time and end time. The end time is always
+     * later then the begin time; the length of the period is always positive
+     *
+     *
+     * WARNING: length of period should be smaller than Integer.MAXINT; this
+     * restriction will never be checked
+     *
+     * @author Eric de Regter
+     */
+    public Period2(ITime bt, ITime et) {
         if (bt.compareTo(et) < 0) {
             this.bt = bt;
-            this.et = et;
+            duration = bt.difference(et);
         } else {
             throw new IllegalArgumentException("bt is later than et");
         }
-
     }
 
     /**
@@ -46,7 +49,7 @@ public class Period implements IPeriod {
      */
     @Override
     public ITime getEndTime() {
-        return et;
+        return bt.plus((int) duration);
     }
 
     /**
@@ -55,7 +58,7 @@ public class Period implements IPeriod {
      */
     @Override
     public int length() {
-        return bt.difference(et);
+        return (int) duration;
     }
 
     /**
@@ -65,7 +68,7 @@ public class Period implements IPeriod {
      */
     @Override
     public void setBeginTime(ITime beginTime) {
-        if (beginTime.compareTo(et) < 0) {
+        if (beginTime.compareTo(bt.plus((int) duration)) < 0) {
             bt = beginTime;
         } else {
             throw new IllegalArgumentException("begin time is not earlier than the current end time");
@@ -80,7 +83,7 @@ public class Period implements IPeriod {
     @Override
     public void setEndTime(ITime endTime) {
         if (endTime.compareTo(bt) > 0) {
-            et = endTime;
+            duration = bt.difference(endTime);
         } else {
             throw new IllegalArgumentException("end time is not later than the current begin time");
         }
@@ -94,8 +97,7 @@ public class Period implements IPeriod {
      */
     @Override
     public void move(int minutes) {
-        bt.plus(minutes);
-        et.plus(minutes);
+        bt = bt.plus(minutes);
     }
 
     /**
@@ -105,8 +107,8 @@ public class Period implements IPeriod {
      */
     @Override
     public void changeLengthWith(int minutes) {
-        if (et.plus(minutes).compareTo(bt) > 0) {
-            et = et.plus(minutes);
+        if (bt.plus((int) duration).plus(minutes).compareTo(bt) > 0) {
+            duration += minutes;
         } else {
             throw new IllegalArgumentException("Period will be negative");
         }
@@ -120,7 +122,7 @@ public class Period implements IPeriod {
      */
     @Override
     public boolean isPartOf(IPeriod period) {
-        return bt.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0;
+        return bt.compareTo(period.getBeginTime()) > 0 && bt.plus((int) duration).compareTo(period.getEndTime()) < 0;
     }
 
     /**
@@ -133,7 +135,7 @@ public class Period implements IPeriod {
     @Override
     public IPeriod unionWith(IPeriod period) {
         Period p;
-
+        ITime et = bt.plus((int) duration);
         //kijkt of de periods opeenvolgend zijn, zo ja dan wordt de kleinste period gereturnd
         if (bt.compareTo(period.getEndTime()) == 0) {
             p = new Period(period.getBeginTime(), et);
@@ -171,6 +173,7 @@ public class Period implements IPeriod {
     @Override
     public IPeriod intersectionWith(IPeriod period) {
         Period p;
+        ITime et = bt.plus((int) duration);
         // deze periode ligt voor [period] en is een intersect
         if (bt.compareTo(period.getBeginTime()) < 0 && (et.compareTo(period.getBeginTime()) > 0 && et.compareTo(period.getEndTime()) < 0)) {
             p = new Period(period.getBeginTime(), et);
