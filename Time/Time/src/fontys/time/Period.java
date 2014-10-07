@@ -23,7 +23,8 @@ public class Period implements IPeriod {
 
     public Period(ITime bt, ITime et)
     {
-        if (bt.compareTo(et) > 0)
+        int i = bt.compareTo(et);
+        if (bt.compareTo(et) < 0)
         {
             this.bt = bt;
             this.et = et;
@@ -79,7 +80,6 @@ public class Period implements IPeriod {
         }
         else
         {
-            //foutmelding
             throw new IllegalArgumentException("begin time is not earlier than the current end time");
         }
     }
