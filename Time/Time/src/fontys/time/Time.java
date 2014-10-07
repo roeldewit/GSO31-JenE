@@ -120,7 +120,7 @@ public class Time implements ITime {
         Calendar c = (Calendar) calendar.clone();
         c.add(GregorianCalendar.MINUTE, minutes);
         return new Time(c.get(GregorianCalendar.YEAR),
-                c.get(GregorianCalendar.MONTH),
+                c.get(GregorianCalendar.MONTH) + 1,
                 c.get(GregorianCalendar.DATE),
                 c.get(GregorianCalendar.HOUR_OF_DAY),
                 c.get(GregorianCalendar.MINUTE));
@@ -151,7 +151,12 @@ public class Time implements ITime {
 
     @Override
     public int compareTo(ITime o) {
-        Calendar c = new GregorianCalendar(o.getYear(), o.getMonth(), o.getDay(), o.getHours(), o.getMinutes());
+        Calendar c = new GregorianCalendar();
+        c.set(GregorianCalendar.YEAR, o.getYear());
+        c.set(GregorianCalendar.MONTH, o.getMonth() - 1);
+        c.set(GregorianCalendar.DATE, o.getDay());
+        c.set(GregorianCalendar.HOUR_OF_DAY, o.getHours());
+        c.set(GregorianCalendar.MINUTE, o.getMinutes());
         c.clear(GregorianCalendar.SECOND);
         c.clear(GregorianCalendar.MILLISECOND);
         return calendar.compareTo(c);
