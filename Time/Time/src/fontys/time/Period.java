@@ -54,8 +54,14 @@ public class Period implements IPeriod {
      * @return the length of this period expressed in minutes (always positive)
      */
     @Override
+<<<<<<< HEAD
     public int length() {
         return bt.difference(et);
+=======
+    public int length()
+    {
+        return et.difference(bt);
+>>>>>>> 24911326030be809254db4c2b82a3cdc910d3428
     }
 
     /**
@@ -78,11 +84,23 @@ public class Period implements IPeriod {
      * @param endTime must be later than the current begin time of this period
      */
     @Override
+<<<<<<< HEAD
     public void setEndTime(ITime endTime) {
         if (endTime.compareTo(bt) > 0) {
             et = endTime;
         } else {
             throw new IllegalArgumentException("end time is not later than the current begin time");
+=======
+    public void setEndTime(ITime endTime)
+    {
+        if (endTime.compareTo(bt) > 0)
+        {
+            et = et = endTime;
+        }
+        else
+        {
+            throw new IllegalArgumentException("end time must not be later than the current begin time");
+>>>>>>> 24911326030be809254db4c2b82a3cdc910d3428
         }
     }
 
@@ -93,9 +111,16 @@ public class Period implements IPeriod {
      * @param minutes (a negative value is allowed)
      */
     @Override
+<<<<<<< HEAD
     public void move(int minutes) {
         bt.plus(minutes);
         et.plus(minutes);
+=======
+    public void move(int minutes)
+    {
+        bt = bt.plus(minutes);
+        et = et.plus(minutes);
+>>>>>>> 24911326030be809254db4c2b82a3cdc910d3428
     }
 
     /**
