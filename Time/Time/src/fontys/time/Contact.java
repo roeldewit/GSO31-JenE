@@ -89,8 +89,8 @@ public class Contact {
      *
      * @return An iteration of the appointments
      */
-    public ArrayList<Appointment> appointments()
+    public Iterator<Appointment> appointments()
     {
-        return appointments;
+        return appointments.iterator();
     }
 }

@@ -6,6 +6,7 @@
 package fontys.time;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import org.junit.Assert;
 import static org.junit.Assert.fail;
 import org.junit.Test;
@@ -142,12 +143,40 @@ public class AppointmentUnitTest {
             fail("Failed to add a contact to the appointment");
         }
 
-        Assert.assertEquals("Amount of invitees is not correct", 4, appointment.invitees().size());
+        int size = 0;
+        int gelukt = 0;
+        Iterator<Contact> contacts = appointment.invitees();
+        while (contacts.hasNext())
+        {
+            size++;
+            Contact contactIt = contacts.next();
+            if (contactIt.getName().equals("Eric"))
+            {
+                Assert.assertEquals("Contact does not match", contact1, contactIt);
+                gelukt++;
+            }
 
-        Assert.assertEquals("Contact does not match", contact1, appointment.invitees().get(0));
-        Assert.assertEquals("Contact does not match", contact2, appointment.invitees().get(1));
-        Assert.assertEquals("Contact does not match", contact3, appointment.invitees().get(2));
-        Assert.assertEquals("Contact does not match", contact4, appointment.invitees().get(3));
+            if (contactIt.getName().equals("Joris"))
+            {
+                Assert.assertEquals("Contact does not match", contact2, contactIt);
+                gelukt++;
+            }
+
+            if (contactIt.getName().equals("Jan"))
+            {
+                Assert.assertEquals("Contact does not match", contact3, contactIt);
+                gelukt++;
+            }
+
+            if (contactIt.getName().equals("Joep"))
+            {
+                Assert.assertEquals("Contact does not match", contact4, contactIt);
+                gelukt++;
+            }
+        }
+
+        Assert.assertEquals("Amount of invitees is not correct", 4, size);
+        Assert.assertEquals("Contacts do not match", 4, gelukt);
     }
 
     /**
@@ -177,7 +206,12 @@ public class AppointmentUnitTest {
             fail("Contact not added to appointment");
         }
 
-        Assert.assertEquals("Contact does not match", contact, appointment.invitees().get(0));
+        Iterator<Contact> contacts = appointment.invitees();
+        while (contacts.hasNext())
+        {
+            Contact contactIt = contacts.next();
+            Assert.assertEquals("Contact does not match", contact, contactIt);
+        }
 
         //Add Appointment with conflict
         String subject2 = "Team building";
@@ -205,7 +239,13 @@ public class AppointmentUnitTest {
         try
         {
             appointment.addContact(contact2);
-            Assert.assertEquals("Amount of contacts for this appointment is not correct", 2, appointment.invitees().size());
+            int size = 0;
+            while (contacts.hasNext())
+            {
+                size++;
+            }
+
+            Assert.assertEquals("Amount of contacts for this appointment is not correct", 2, size);
         }
         catch (IllegalArgumentException ex)
         {
@@ -215,7 +255,12 @@ public class AppointmentUnitTest {
         try
         {
             appointment.removeContact(contact);
-            Assert.assertEquals("Amount of invitees is not correct", 1, appointment.invitees().size());
+            int size = 0;
+            while (contacts.hasNext())
+            {
+                size++;
+            }
+            Assert.assertEquals("Amount of invitees is not correct", 1, size);
         }
         catch (IllegalArgumentException ex)
         {

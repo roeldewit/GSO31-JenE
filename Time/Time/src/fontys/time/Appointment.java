@@ -60,9 +60,9 @@ public class Appointment {
      * @return an iterator with the invitees
      */
     
-    public ArrayList<Contact> invitees()
+    public Iterator<Contact> invitees()
     {
-        return invitees;
+        return invitees.iterator();
     }
     
     /**
