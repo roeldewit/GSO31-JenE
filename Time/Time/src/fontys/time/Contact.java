@@ -22,7 +22,8 @@ public class Contact {
      *
      * @param name The name of this contact
      */
-    public Contact(String name) {
+    public Contact(String name)
+    {
         this.name = name;
         appointments = new ArrayList<Appointment>();
     }
@@ -32,7 +33,8 @@ public class Contact {
      *
      * @return the name of this contact
      */
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
@@ -43,8 +45,30 @@ public class Contact {
      * @param a The appointment to add
      * @return True when the operation succeeded, False when it failed.
      */
-    boolean addAppointment(Appointment a) {
-        throw new UnsupportedOperationException();
+    boolean addAppointment(Appointment a)
+    {
+        if (appointments.size() > 0)
+        {
+            for (Appointment appointment : appointments)
+            {
+                if (a.getPeriod().intersectionWith(appointment.getPeriod()) == null)
+                {
+                    appointments.add(a);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            appointments.add(a);
+            return true;
+        }
+        
+        return false;
     }
 
     /**
@@ -52,8 +76,12 @@ public class Contact {
      *
      * @param a The appointment to remove.
      */
-    void removeAppointment(Appointment a) {
-        throw new UnsupportedOperationException();
+    void removeAppointment(Appointment a)
+    {
+        if(appointments.contains(a))
+        {
+            appointments.remove(a);
+        }
     }
 
     /**
@@ -61,7 +89,8 @@ public class Contact {
      *
      * @return An iteration of the appointments
      */
-    public Iterator<Appointment> appointments() {
-        throw new UnsupportedOperationException();
+    public ArrayList<Appointment> appointments()
+    {
+        return appointments;
     }
 }
