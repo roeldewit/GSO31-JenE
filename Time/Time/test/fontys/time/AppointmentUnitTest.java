@@ -25,32 +25,25 @@ public class AppointmentUnitTest {
      * @param period The period of the appointment
      */
     @Test
-    public void testCreationAppointment()
-    {
+    public void testCreationAppointment() {
         ITime bt = new Time(2014, 8, 21, 18, 00);
         ITime et = new Time(2014, 8, 21, 19, 00);
         IPeriod period = new Period(bt, et);
         Appointment appointment;
 
         //Create appointment with empty Subject
-        try
-        {
+        try {
             appointment = new Appointment("", period);
             Assert.assertNotNull(appointment);
-        }
-        catch (IllegalArgumentException ex)
-        {
+        } catch (IllegalArgumentException ex) {
             fail(ex.toString());
         }
 
         //Create appointment with subject
-        try
-        {
+        try {
             appointment = new Appointment("Vergadering Software Team", period);
             Assert.assertNotNull(appointment);
-        }
-        catch (IllegalArgumentException ex)
-        {
+        } catch (IllegalArgumentException ex) {
             fail(ex.toString());
         }
     }
@@ -61,8 +54,7 @@ public class AppointmentUnitTest {
      * @return the subject of this Appointment
      */
     @Test
-    public void testGetSubject()
-    {
+    public void testGetSubject() {
         //Appointment with subject
         String subject = "Vergadering met Software Team";
         ITime bt = new Time(2014, 8, 21, 18, 00);
@@ -71,25 +63,19 @@ public class AppointmentUnitTest {
 
         Appointment appointment;
 
-        try
-        {
+        try {
             appointment = new Appointment("Vergadering met Software Team", period);
             Assert.assertEquals("getSubject is not correct", subject, appointment.getSubject());
-        }
-        catch (IllegalArgumentException ex)
-        {
+        } catch (IllegalArgumentException ex) {
             fail("No appointment created");
         }
 
         //Appointment without subject
         subject = "";
-        try
-        {
+        try {
             appointment = new Appointment(subject, period);
             Assert.assertEquals("getSubject is not correct", subject, appointment.getSubject());
-        }
-        catch (IllegalArgumentException ex)
-        {
+        } catch (IllegalArgumentException ex) {
             fail("No appointment created");
         }
 
@@ -101,8 +87,7 @@ public class AppointmentUnitTest {
      * @return the period of this Appointment
      */
     @Test
-    public void testGetPeriod()
-    {
+    public void testGetPeriod() {
         String subject = "Vergadering met Software Team";
         ITime bt = new Time(2014, 8, 21, 18, 00);
         ITime et = new Time(2014, 8, 21, 19, 00);
@@ -118,8 +103,7 @@ public class AppointmentUnitTest {
      * @return an iterator with the invitees
      */
     @Test
-    public void getInvitees()
-    {
+    public void getInvitees() {
         String subject = "Vergadering met Software Team";
         ITime bt = new Time(2014, 8, 21, 18, 00);
         ITime et = new Time(2014, 8, 21, 19, 00);
@@ -131,45 +115,37 @@ public class AppointmentUnitTest {
         Contact contact3 = new Contact("Jan");
         Contact contact4 = new Contact("Joep");
 
-        try
-        {
+        try {
             appointment.addContact(contact1);
             appointment.addContact(contact2);
             appointment.addContact(contact3);
             appointment.addContact(contact4);
-        }
-        catch (IllegalArgumentException ex)
-        {
+        } catch (IllegalArgumentException ex) {
             fail("Failed to add a contact to the appointment");
         }
 
         int size = 0;
         int gelukt = 0;
         Iterator<Contact> contacts = appointment.invitees();
-        while (contacts.hasNext())
-        {
+        while (contacts.hasNext()) {
             size++;
             Contact contactIt = contacts.next();
-            if (contactIt.getName().equals("Eric"))
-            {
+            if (contactIt.getName().equals("Eric")) {
                 Assert.assertEquals("Contact does not match", contact1, contactIt);
                 gelukt++;
             }
 
-            if (contactIt.getName().equals("Joris"))
-            {
+            if (contactIt.getName().equals("Joris")) {
                 Assert.assertEquals("Contact does not match", contact2, contactIt);
                 gelukt++;
             }
 
-            if (contactIt.getName().equals("Jan"))
-            {
+            if (contactIt.getName().equals("Jan")) {
                 Assert.assertEquals("Contact does not match", contact3, contactIt);
                 gelukt++;
             }
 
-            if (contactIt.getName().equals("Joep"))
-            {
+            if (contactIt.getName().equals("Joep")) {
                 Assert.assertEquals("Contact does not match", contact4, contactIt);
                 gelukt++;
             }
@@ -187,8 +163,7 @@ public class AppointmentUnitTest {
      * @return true when the contact was added, false when it failed
      */
     @Test
-    public void testAddRemoveContact()
-    {
+    public void testAddRemoveContact() {
         //Add Appointment without conflict
         String subject = "Vergadering met Software Team";
         ITime bt = new Time(2014, 8, 21, 18, 00);
@@ -197,18 +172,14 @@ public class AppointmentUnitTest {
         Appointment appointment = new Appointment(subject, period);
 
         Contact contact = new Contact("Eric");
-        try
-        {
+        try {
             appointment.addContact(contact);
-        }
-        catch (IllegalArgumentException ex)
-        {
+        } catch (IllegalArgumentException ex) {
             fail("Contact not added to appointment");
         }
 
         Iterator<Contact> contacts = appointment.invitees();
-        while (contacts.hasNext())
-        {
+        while (contacts.hasNext()) {
             Contact contactIt = contacts.next();
             Assert.assertEquals("Contact does not match", contact, contactIt);
         }
@@ -220,12 +191,9 @@ public class AppointmentUnitTest {
         IPeriod period2 = new Period(bt2, et2);
         Appointment appointment2 = new Appointment(subject2, period2);
 
-        try
-        {
+        try {
             Assert.assertTrue("Appointments may not conflict", appointment2.addContact(contact));
-        }
-        catch (IllegalArgumentException ex)
-        {
+        } catch (IllegalArgumentException ex) {
             Assert.assertTrue(true);
         }
 
@@ -235,34 +203,26 @@ public class AppointmentUnitTest {
          * @param c The contact that gets removed from this Appointment
          */
         Contact contact2 = new Contact("Joris");
-        try
-        {
+        try {
             appointment.addContact(contact2);
             int size = 0;
-            while (contacts.hasNext())
-            {
+            while (contacts.hasNext()) {
                 size++;
             }
 
             Assert.assertEquals("Amount of contacts for this appointment is not correct", 2, size);
-        }
-        catch (IllegalArgumentException ex)
-        {
+        } catch (IllegalArgumentException ex) {
             fail("Failed to add contact to appointment");
         }
 
-        try
-        {
+        try {
             appointment.removeContact(contact);
             int size = 0;
-            while (contacts.hasNext())
-            {
+            while (contacts.hasNext()) {
                 size++;
             }
             Assert.assertEquals("Amount of invitees is not correct", 1, size);
-        }
-        catch (IllegalArgumentException ex)
-        {
+        } catch (IllegalArgumentException ex) {
             fail("Contact is not invited for this appointment");
         }
 
