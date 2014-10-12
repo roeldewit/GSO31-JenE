@@ -21,7 +21,7 @@ public class Appointment {
     /**
      * Creates a new Appointments instance with a subject and a Period.
      * 
-     * @param subject The subject of the appointment, can be empty
+     * @param subject The subject of the appointment, can be an empty String (not null)
      * @param period The period of the appointment
      */
     
@@ -55,7 +55,7 @@ public class Appointment {
     }
     
     /**
-     * The invitees of this Appointment.
+     * Gets the invitees of this Appointment.
      * 
      * @return an iterator with the invitees
      */
