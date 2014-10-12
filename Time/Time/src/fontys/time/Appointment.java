@@ -74,8 +74,14 @@ public class Appointment {
     
     public boolean addContact(Contact c)
     {
-        //nog maken
-        return false;
+        for(c.appointments(); c.appointments().hasNext();){
+            if(c.appointments().next().getPeriod().intersectionWith(period) == null)
+            {
+                return false;
+            }
+        }
+        invitees.add(c);
+        return true;
     }
     
     /**
@@ -86,6 +92,6 @@ public class Appointment {
     
     public void removeContact(Contact c)
     {
-        //nog maken
+        invitees.remove(c);
     }
 }

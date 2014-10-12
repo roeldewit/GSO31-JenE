@@ -222,8 +222,7 @@ public class AppointmentUnitTest {
 
         try
         {
-            appointment2.addContact(contact);
-            fail("Appointments may not conflict");
+            Assert.assertTrue("Appointments may not conflict", appointment2.addContact(contact));
         }
         catch (IllegalArgumentException ex)
         {
