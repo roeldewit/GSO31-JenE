@@ -48,6 +48,13 @@ public class ContactUnitTest {
 
     @Test
     public void testAddAppointment() {
+        /**
+         * Adds an appointment to this contact's agenda. There may be no overlap
+         * between appointments.
+         *
+         * @param a The appointment to add
+         * @return True when the operation succeeded, False when it failed.
+         */
         ITime bt = new Time(2014, 8, 21, 18, 00);
         ITime et = new Time(2014, 8, 21, 19, 00);
         IPeriod period = new Period(bt, et);
@@ -69,6 +76,11 @@ public class ContactUnitTest {
 
     @Test
     public void testRemoveAppointment() {
+        /**
+         * Removes an appointment from this contact's agenda.
+         *
+         * @param a The appointment to remove.
+         */
         ITime bt = new Time(2014, 8, 21, 18, 00);
         ITime et = new Time(2014, 8, 21, 19, 00);
         IPeriod period = new Period(bt, et);
