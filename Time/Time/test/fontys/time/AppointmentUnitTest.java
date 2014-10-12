@@ -206,8 +206,10 @@ public class AppointmentUnitTest {
         try {
             appointment.addContact(contact2);
             int size = 0;
-            while (contacts.hasNext()) {
+            Iterator<Contact> contactsz = appointment.invitees();
+            while (contactsz.hasNext()) {
                 size++;
+                Contact contactIt = contactsz.next();
             }
 
             Assert.assertEquals("Amount of contacts for this appointment is not correct", 2, size);
@@ -217,8 +219,10 @@ public class AppointmentUnitTest {
 
         try {
             appointment.removeContact(contact);
+            Iterator<Contact> contacts3 = appointment.invitees();
             int size = 0;
-            while (contacts.hasNext()) {
+            while (contacts3.hasNext()) {
+                contacts3.next();
                 size++;
             }
             Assert.assertEquals("Amount of invitees is not correct", 1, size);
