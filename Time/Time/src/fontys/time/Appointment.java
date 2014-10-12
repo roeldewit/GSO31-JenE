@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 /**
  *
- * @author Joris Douven (specificatie Eric de Regter)
+ * @author Joris Douven(Implementatie) Eric de Regter(Specificatie)
  */
 public class Appointment {
     

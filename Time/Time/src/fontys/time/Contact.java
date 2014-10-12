@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 /**
  *
- * @author Joris Douven
+ * @author Eric de Regter(Implementatie) Joris Douven(Specificatie)
  */
 public class Contact {
 
