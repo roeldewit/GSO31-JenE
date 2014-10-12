@@ -5,6 +5,7 @@
  */
 package fontys.time;
 
+import java.util.Iterator;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -94,8 +95,8 @@ public class ContactUnitTest {
         c.addAppointment(app2);
 
         c.removeAppointment(app1);
-        for (c.appointments(); c.appointments().hasNext();) {
-            if (c.appointments().next() == app1) {
+        for (Iterator<Appointment> appIter = c.appointments(); appIter.hasNext();) {
+            if (appIter.next() == app1) {
                 fail("Appointment hasn't been removed.");
             }
         }
