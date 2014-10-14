@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AEX;
+package aex;
+
+import java.io.Serializable;
 
 /**
  *
  * @author Joris Douven, Eric de Regter
  */
-public interface IFonds {
+public interface IFonds extends Serializable{
     
     public String getNaam();
     

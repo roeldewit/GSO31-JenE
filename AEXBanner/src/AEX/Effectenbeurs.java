@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package AEX;
+package aex;
+
+import java.io.Serializable;
 
 /**
  *
  * @author HP user
  */
-public class Effectenbeurs implements IEffectenbeurs {
+public class Effectenbeurs implements IEffectenbeurs, Serializable {
 
     public Effectenbeurs() {
 
