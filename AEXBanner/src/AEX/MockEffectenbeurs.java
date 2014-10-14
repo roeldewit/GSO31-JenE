@@ -31,7 +31,7 @@ public class MockEffectenbeurs implements IEffectenbeurs {
                     f.setKoers(Math.round((f.getKoers() + ((rand.nextDouble() * 10.0) - 5.0)) * 100.0) / 100.0);
                 }
             }
-        }, 10000, 10000);
+        }, 5000, Math.round((Math.random() * 1000) + 4000));
     }
 
     @Override

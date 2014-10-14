@@ -5,15 +5,15 @@
  */
 package GUI;
 
-import AEX.IEffectenbeurs;
-import AEX.IFonds;
-import AEX.MockEffectenbeurs;
+import AEX.BannerController;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 
 /**
  *
@@ -22,33 +22,56 @@ import javafx.scene.control.Label;
 public class FXMLAEXBannerController implements Initializable {
 
     @FXML
-    private Label label;
+    private Label label1;
 
-    private IEffectenbeurs beurs;
+    @FXML
+    private Label label2;
+
+    @FXML
+    private Slider speedSlider;
+
+    private BannerController control;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        label.relocate(500, label.getLayoutY());
-        beurs = new MockEffectenbeurs();
+        label1.relocate(0, label1.getLayoutY());
+        control = new BannerController(this);
 
         new AnimationTimer() {
             @Override
             public void handle(long now) {
-                String s = "";
-                for (IFonds f : beurs.getKoersen()) {
-                    s = s.concat(f.getNaam() + ": " + f.getKoers() + " - ");
+
+                if (label1.getLayoutX() < label2.getLayoutX()) {
+                    if (label1.getLayoutX() + label1.getWidth() < 0) {
+                        label1.relocate(label2.getLayoutX() + label2.getWidth(), label2.getLayoutY());
+                    } else {
+                        label1.relocate(label1.getLayoutX() - getSpeed(), label1.getLayoutY());
+                        label2.relocate(label1.getLayoutX() + label1.getWidth(), label1.getLayoutY());
+                    }
+                } else {
+                    if (label2.getLayoutX() + label2.getWidth() < 0) {
+                        label2.relocate(label1.getLayoutX() + label1.getWidth(), label1.getLayoutY());
+                    } else {
+                        label2.relocate(label2.getLayoutX() - getSpeed(), label2.getLayoutY());
+                        label1.relocate(label2.getLayoutX() + label2.getWidth(), label2.getLayoutY());
+                    }
                 }
-                setKoersen(s);
-                if (label.getLayoutX() + label.getWidth() < 500) {
-                    label.relocate(500, label.getLayoutY());
-                }
-                label.relocate(label.getLayoutX() - 2, label.getLayoutY());
             }
         }.start();
     }
 
     public void setKoersen(String koersen) {
-        label.setText(koersen);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                label1.setText(koersen);
+                label2.setText(koersen);
+            }
+        });
+    }
+
+    private double getSpeed() {
+        return speedSlider.getValue() / 33.0 + 0.1;
     }
 
 }
