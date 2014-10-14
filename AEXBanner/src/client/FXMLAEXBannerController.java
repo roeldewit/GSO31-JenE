@@ -52,7 +52,8 @@ public class FXMLAEXBannerController implements Initializable {
 
     public void connect(Event evt) {
         FXMLAEXBannerController controller = this;
-        Thread t = new Thread(new Runnable() {
+        Thread t;
+        t = new Thread(new Runnable() {
             @Override
             public void run() {
                 int portNumber = -1;
@@ -87,6 +88,8 @@ public class FXMLAEXBannerController implements Initializable {
                 }.start();
             }
         });
+        t.start();
+        button_Connect.setDisable(true);
     }
 
     public void setKoersen(String koersen) {

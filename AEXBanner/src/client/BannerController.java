@@ -35,14 +35,17 @@ public class BannerController {
     public BannerController(FXMLAEXBannerController controller, String ipAddress, int portNumber) {
         this.controller = controller;
 
+        System.out.println("Attempting to locate remote registry");
         //Locate registry
         try {
             registry = LocateRegistry.getRegistry(ipAddress, portNumber);
+            System.out.println("Registry located");
         } catch (RemoteException ex) {
             System.out.println("Cannot locate registry");
             System.out.println("RemoteException: " + ex.getMessage());
             registry = null;
         }
+        
         //Bind effectenbeurs
         if(registry != null) {
             try{
