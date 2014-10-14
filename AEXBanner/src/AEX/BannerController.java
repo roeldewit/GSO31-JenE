@@ -5,7 +5,6 @@
  */
 package AEX;
 
-import GUI.FXMLAEXBannerController;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,8 +16,10 @@ public class BannerController {
 
     private Timer timer;
     private IEffectenbeurs beurs;
+    private FXMLAEXBannerController controller;
 
-    public BannerController(FXMLAEXBannerController application) {
+    public BannerController(FXMLAEXBannerController controller) {
+        this.controller = controller;
         timer = new Timer("UpdateBanner", true);
         beurs = new MockEffectenbeurs();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -29,7 +30,7 @@ public class BannerController {
                 for (IFonds f : beurs.getKoersen()) {
                     string = string.concat(f.getNaam() + ": " + f.getKoers() + " - ");
                 }
-                application.setKoersen(string);
+                controller.setKoersen(string);
             }
         }, 0, 1000);
     }
