@@ -30,12 +30,10 @@ public class FXMLAEXBannerController implements Initializable {
     @FXML
     private Slider speedSlider;
 
-    private BannerController control;
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         label1.relocate(0, label1.getLayoutY());
-        control = new BannerController(this);
+        BannerController bannerController = new BannerController(this);
 
         new AnimationTimer() {
             @Override
