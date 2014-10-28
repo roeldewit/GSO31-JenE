@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author HP user
+ * @author Joris Douven, Eric de Regter
  */
 public class Effectenbeurs implements IEffectenbeurs, Serializable {
 
