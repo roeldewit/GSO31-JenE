@@ -5,9 +5,9 @@
  */
 package server;
 
-import aex.Fonds;
-import aex.IEffectenbeurs;
-import aex.IFonds;
+import AEX.Fonds;
+import AEX.IEffectenbeurs;
+import AEX.IFonds;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

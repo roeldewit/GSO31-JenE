@@ -5,8 +5,8 @@
  */
 package client;
 
-import aex.IFonds;
-import aex.IEffectenbeurs;
+import AEX.IFonds;
+import AEX.IEffectenbeurs;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
