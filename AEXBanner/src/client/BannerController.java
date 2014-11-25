@@ -7,6 +7,8 @@ package client;
 
 import AEX.IFonds;
 import AEX.IEffectenbeurs;
+import fontys.observer.RemotePropertyListener;
+import java.beans.PropertyChangeEvent;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -20,7 +22,7 @@ import java.util.logging.Logger;
  *
  * @author Joris Douven, Eric de Regter
  */
-public class BannerController {
+public class BannerController implements RemotePropertyListener {
 
     //Binding name for Effectenbeurs
     private static final String BINDING_NAME = "EffectenBeurs";
@@ -45,40 +47,38 @@ public class BannerController {
             System.out.println("RemoteException: " + ex.getMessage());
             registry = null;
         }
-        
+
         //Bind effectenbeurs
-        if(registry != null) {
-            try{
+        if (registry != null) {
+            try {
                 beurs = (IEffectenbeurs) registry.lookup(BINDING_NAME);
-            } catch(RemoteException ex){
+            } catch (RemoteException ex) {
                 System.out.println("Cannot bind Effectenbeurs");
                 System.out.println("RemoteException: " + ex.getMessage());
                 beurs = null;
-            } catch(NotBoundException ex){
+            } catch (NotBoundException ex) {
                 System.out.println("Cannot bind Effectenbeurs");
                 System.out.println("NotBoundException: " + ex.getMessage());
                 beurs = null;
             }
         }
-        
-        if (beurs != null) {
-            timer = new Timer("UpdateBanner", true);
-            timer.scheduleAtFixedRate(new TimerTask() {
 
-                @Override
-                public void run() {
-                    try {
-                        String string = "";
-                        for (IFonds f : beurs.getKoersen()) {
-                            string = string.concat(f.getNaam() + ": " + f.getKoers() + " - ");
-                        }
-                        controller.setKoersen(string);
-                    } catch (RemoteException ex) {
-                        System.out.println("Cannot getKoersen from EffectenBeurs");
-                        System.out.println("RemoteException: " + ex.getMessage());
-                    }
-                }
-            }, 0, 1000);
+        if (beurs != null) {
+            try {
+                beurs.addListener(this, "koersen");
+            } catch (RemoteException ex) {
+                Logger.getLogger(BannerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) throws RemoteException {
+        String string = "";
+        IFonds[] koersen = (IFonds[]) evt.getNewValue();
+        for (IFonds f : koersen) {
+            string = string.concat(f.getNaam() + ": " + f.getKoers() + " - ");
+        }
+
     }
 }

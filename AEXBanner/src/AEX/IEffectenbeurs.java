@@ -5,6 +5,7 @@
  */
 package AEX;
 
+import fontys.observer.RemotePublisher;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -12,7 +13,7 @@ import java.rmi.RemoteException;
  *
  * @author Joris Douven, Eric de Regter
  */
-public interface IEffectenbeurs extends Remote {
+public interface IEffectenbeurs extends Remote, RemotePublisher {
 
     public IFonds[] getKoersen() throws RemoteException;
 }
