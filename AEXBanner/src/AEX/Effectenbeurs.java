@@ -5,9 +5,7 @@
  */
 package AEX;
 
-import fontys.observer.RemotePropertyListener;
 import java.io.Serializable;
-import java.rmi.RemoteException;
 
 /**
  *
@@ -21,16 +19,6 @@ public class Effectenbeurs implements IEffectenbeurs, Serializable {
 
     @Override
     public IFonds[] getKoersen() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void addListener(RemotePropertyListener listener, String property) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void removeListener(RemotePropertyListener listener, String property) throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

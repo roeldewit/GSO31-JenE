@@ -13,6 +13,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +31,7 @@ public class BannerController implements RemotePropertyListener {
     private Registry registry = null;
     private IEffectenbeurs beurs = null;
 
+    private Timer timer;
     private FXMLAEXBannerController controller;
 
     public BannerController(FXMLAEXBannerController controller, String ipAddress, int portNumber) {
@@ -76,5 +79,6 @@ public class BannerController implements RemotePropertyListener {
         for (IFonds f : koersen) {
             string = string.concat(f.getNaam() + ": " + f.getKoers() + " - ");
         }
+
     }
 }
