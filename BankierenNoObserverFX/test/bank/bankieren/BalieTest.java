@@ -115,7 +115,7 @@ public class BalieTest {
             }
             catch (NullPointerException ex)
             {
-                fail("Geen controle op null values");
+                  fail("Geen controle op null values");
             }
         }
         catch (RemoteException ex)

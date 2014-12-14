@@ -5,12 +5,13 @@ package bank.bankieren;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 import bank.internettoegang.Bankiersessie;
 import bank.internettoegang.IBankiersessie;
 import fontys.util.InvalidSessionException;
 import fontys.util.NumberDoesntExistException;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -73,8 +74,6 @@ public class SessieTest {
             }
 
             assertTrue("Sessie niet geldig", sessie.isGeldig());
-            sessie.logUit();
-            assertFalse("Sessie is geldig", sessie.isGeldig());
 
             int bankrekeningnummer2 = bank.openRekening("Joris", "Geleen");
             try
@@ -90,11 +89,33 @@ public class SessieTest {
             try
             {
                 assertTrue(sessie.isGeldig());
-                this.wait(601);
-                assertFalse(sessie.isGeldig());
+                Thread.currentThread().sleep(1000);
+                try
+                {
+                    sessie.maakOver(bankrekeningnummer, new Money(1, "€"));
+                    fail("Sessie geldig");
+                }
+                catch (InvalidSessionException ex)
+                {
+                    assertTrue(true);
+                }
+                catch (RemoteException | NumberDoesntExistException ex)
+                {
+                    fail();
+                }
+
                 sessie = new Bankiersessie(bankrekeningnummer2, bank);
-                this.wait(599);
-                assertTrue(sessie.isGeldig());
+                try
+                {
+                    Thread.currentThread().sleep(590);
+                    sessie.maakOver(bankrekeningnummer, new Money(20, "€"));
+                    assertTrue("Sessie niet geldig", sessie.isGeldig());
+                }
+                catch (NumberDoesntExistException | InvalidSessionException | RemoteException ex)
+                {
+                    fail();
+                }
+
             }
             catch (InterruptedException ex)
             {
