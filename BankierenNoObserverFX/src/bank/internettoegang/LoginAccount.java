@@ -13,14 +13,17 @@ public class LoginAccount implements ILoginAccount {
 		this.reknr = rekening;
 	}
 
+        @Override
 	public boolean checkWachtwoord(String wachtwoord) {
 		return this.wachtwoord.equals(wachtwoord);
 	}
 
+        @Override
 	public String getNaam() {
 		return naam;
 	}
 
+        @Override
 	public int getReknr() {
 		return reknr;
 	}

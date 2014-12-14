@@ -1,5 +1,9 @@
 package bank.bankieren;
 
+import fontys.observer.BasicPublisher;
+import fontys.observer.RemotePropertyListener;
+import java.rmi.RemoteException;
+
 class Rekening implements IRekeningTbvBank {
 
     private static final long serialVersionUID = 7221569686169173632L;
@@ -7,11 +11,13 @@ class Rekening implements IRekeningTbvBank {
     private int nr;
     private IKlant eigenaar;
     private Money saldo;
+    private transient BasicPublisher publisher;
 
     /**
      * creatie van een bankrekening met saldo van 0.0<br>
-     * de constructor heeft package-access omdat de PersistentAccount-objecten door een
-     * het PersistentBank-object worden beheerd
+     * de constructor heeft package-access omdat de PersistentAccount-objecten
+     * door een het PersistentBank-object worden beheerd
+     *
      * @see banking.persistence.PersistentBank
      * @param number het bankrekeningnummer
      * @param klant de eigenaar van deze rekening
@@ -23,8 +29,9 @@ class Rekening implements IRekeningTbvBank {
 
     /**
      * creatie van een bankrekening met saldo saldo<br>
-     * de constructor heeft package-access omdat de PersistentAccount-objecten door een
-     * het PersistentBank-object worden beheerd
+     * de constructor heeft package-access omdat de PersistentAccount-objecten
+     * door een het PersistentBank-object worden beheerd
+     *
      * @see banking.persistence.PersistentBank
      * @param number het bankrekeningnummer
      * @param name de naam van de eigenaar
@@ -35,6 +42,7 @@ class Rekening implements IRekeningTbvBank {
         this.nr = number;
         this.eigenaar = klant;
         this.saldo = saldo;
+        publisher = new BasicPublisher(new String[]{"saldo"});
     }
 
     public boolean equals(Object obj) {
@@ -67,7 +75,9 @@ class Rekening implements IRekeningTbvBank {
         }
 
         if (isTransferPossible(bedrag)) {
+            Money previousSaldo = saldo;
             saldo = Money.sum(saldo, bedrag);
+            publisher.inform(this, "saldo", previousSaldo, saldo);
             return true;
         }
         return false;
@@ -76,5 +86,15 @@ class Rekening implements IRekeningTbvBank {
     @Override
     public int getKredietLimietInCenten() {
         return KREDIETLIMIET;
+    }
+
+    @Override
+    public void addListener(RemotePropertyListener listener, String property) throws RemoteException {
+        publisher.addListener(listener, property);
+    }
+
+    @Override
+    public void removeListener(RemotePropertyListener listener, String property) throws RemoteException {
+        publisher.addListener(listener, property);
     }
 }
