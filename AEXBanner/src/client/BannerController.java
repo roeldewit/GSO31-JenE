@@ -10,13 +10,10 @@ import AEX.IEffectenbeurs;
 import fontys.observer.RemotePropertyListener;
 import java.beans.PropertyChangeEvent;
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
