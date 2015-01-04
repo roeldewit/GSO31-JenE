@@ -8,7 +8,9 @@ package bank.server;
 import bank.bankieren.Bank;
 import bank.gui.BankierClient;
 import bank.internettoegang.Balie;
+import bank.internettoegang.CentraleBank;
 import bank.internettoegang.IBalie;
+import bank.internettoegang.ICentraleBank;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +37,8 @@ public class BalieServer extends Application {
     private final double MINIMUM_WINDOW_WIDTH = 600.0;
     private final double MINIMUM_WINDOW_HEIGHT = 200.0;
     private String nameBank;
+    private ICentraleBank centrale;
+    private int port = 1099;
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -44,6 +48,10 @@ public class BalieServer extends Application {
             stage.setTitle("Bankieren");
             stage.setMinWidth(MINIMUM_WINDOW_WIDTH);
             stage.setMinHeight(MINIMUM_WINDOW_HEIGHT);
+            java.rmi.registry.LocateRegistry.createRegistry(port);
+            centrale = new CentraleBank();
+            
+            
             gotoBankSelect();
 
             primaryStage.show();
@@ -58,18 +66,21 @@ public class BalieServer extends Application {
         try {
             this.nameBank = nameBank;
             String address = java.net.InetAddress.getLocalHost().getHostAddress();
-            int port = 1099;
             Properties props = new Properties();
             String rmiBalie = address + ":" + port + "/" + nameBank;
             props.setProperty("balie", rmiBalie);
             out = new FileOutputStream(nameBank + ".props");
             props.store(out, null);
             out.close();
-            java.rmi.registry.LocateRegistry.createRegistry(port);
-            IBalie balie = new Balie(new Bank(nameBank));
-            Naming.rebind(nameBank, balie);
-
-            return true;
+            
+            Bank bank = new Bank(nameBank, centrale);
+            IBalie balie = new Balie(bank);
+            if(centrale.addBank(bank))
+            {
+                Naming.rebind(nameBank, balie);
+                return true;
+            }
+            
 
         } catch (IOException ex) {
             Logger.getLogger(BalieServer.class.getName()).log(Level.SEVERE, null, ex);

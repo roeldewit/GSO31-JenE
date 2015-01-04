@@ -1,5 +1,6 @@
 package bank.bankieren;
 
+import bank.internettoegang.ICentraleBank;
 import fontys.util.*;
 
 import java.util.*;
@@ -17,12 +18,14 @@ public class Bank implements IBank {
     private int nieuwReknr;
     private String name;
     private Lock bankLock = new ReentrantLock();
+    private ICentraleBank centrale;
 
-    public Bank(String name) {
+    public Bank(String name, ICentraleBank centrale) {
         accounts = new HashMap<Integer, IRekeningTbvBank>();
         clients = new ArrayList<IKlant>();
         nieuwReknr = 100000000;
         this.name = name;
+        this.centrale = centrale;
     }
 
     @Override
@@ -31,11 +34,12 @@ public class Bank implements IBank {
             return -1;
         }
 
+        nieuwReknr = centrale.nextBankNr();
+        
         IKlant klant = getKlant(name, city);
         IRekeningTbvBank account = new Rekening(nieuwReknr, klant, Money.EURO);
         accounts.put(nieuwReknr, account);
-        nieuwReknr++;
-        return nieuwReknr - 1;
+        return nieuwReknr;
     }
 
     private IKlant getKlant(String name, String city) {
@@ -72,6 +76,28 @@ public class Bank implements IBank {
                 throw new NumberDoesntExistException("account " + source
                         + " unknown at " + name);
             }
+
+            IRekeningTbvBank dest_account;
+            dest_account = (IRekeningTbvBank) getRekening(destination);
+            if (dest_account == null) {
+                dest_account = (IRekeningTbvBank) centrale.getRekening(destination);
+                if(dest_account == null)
+                {
+                    throw new NumberDoesntExistException("account " + destination
+                        + " unknown at " + name);
+                }
+                else
+                {
+                    boolean gelukt = centrale.maakOver(source, destination, money);
+                    if(gelukt)
+                    {
+                        
+                        return true;
+                    }
+                    
+                }
+                
+            }
             
             Money negative = Money.difference(new Money(0, money.getCurrency()),
                     money);
@@ -79,12 +105,7 @@ public class Bank implements IBank {
             if (!success) {
                 return false;
             }
-
-            IRekeningTbvBank dest_account = (IRekeningTbvBank) getRekening(destination);
-            if (dest_account == null) {
-                throw new NumberDoesntExistException("account " + destination
-                        + " unknown at " + name);
-            }
+            
             success = dest_account.muteer(money);
 
             if (!success) // rollback

@@ -5,6 +5,10 @@
  */
 package bank.internettoegang;
 
+import bank.bankieren.IBank;
+import bank.bankieren.IRekening;
+import bank.bankieren.Money;
+
 /**
  *
  * @author Joris (javadoc)
@@ -23,5 +27,12 @@ public interface ICentraleBank{
      * @param bedrag het over te maken bedrag
      * @return true als gelukt, false als gefaald
      */
-    public boolean maakOver(int rek1, String bank1, int rek2, String bank2, double bedrag);
+    public boolean maakOver(int rek1, int rek2, Money bedrag);
+    
+    public int nextBankNr();
+    
+    public boolean addBank(IBank bank);
+    
+    public IRekening getRekening(int rekenNr);
+    
 }
