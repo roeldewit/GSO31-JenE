@@ -1,6 +1,5 @@
 package bank.bankieren;
 
-import fontys.observer.RemotePublisher;
 import fontys.util.*;
 
 /**
@@ -48,4 +47,15 @@ public interface IBank {
      * @return de naam van deze bank
      */
     String getName();
+
+    /**
+     * bedrag wordt toegevoegd of afgetrokken van opgegeven rekening.
+     *
+     * @param reknr De doelrekening
+     * @param bedrag Het te muteren bedrag
+     * @return True als gelukt, false als niet gelukt
+     * @throws NumberDoesntExistException Als het rekeningnummer geen
+     * bijbehorede rekening heeft
+     */
+    boolean muteer(int reknr, Money bedrag) throws NumberDoesntExistException;
 }

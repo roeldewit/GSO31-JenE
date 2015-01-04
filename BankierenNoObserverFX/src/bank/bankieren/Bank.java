@@ -1,6 +1,5 @@
 package bank.bankieren;
 
-import fontys.observer.BasicPublisher;
 import fontys.util.*;
 
 import java.util.*;
@@ -26,6 +25,7 @@ public class Bank implements IBank {
         this.name = name;
     }
 
+    @Override
     public int openRekening(String name, String city) {
         if (name.equals("") || city.equals("")) {
             return -1;
@@ -49,10 +49,12 @@ public class Bank implements IBank {
         return klant;
     }
 
+    @Override
     public IRekening getRekening(int nr) {
         return accounts.get(nr);
     }
 
+    @Override
     public boolean maakOver(int source, int destination, Money money)
             throws NumberDoesntExistException {
         bankLock.lock();
@@ -98,5 +100,10 @@ public class Bank implements IBank {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean muteer(int reknr, Money bedrag) throws NumberDoesntExistException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
