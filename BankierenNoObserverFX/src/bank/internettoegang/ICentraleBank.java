@@ -20,19 +20,31 @@ public interface ICentraleBank{
      * mits het afschrijven van het bedrag van de rekening met nr bron niet
      * lager wordt dan de kredietlimiet van deze rekening
      *
-     * @param rek1 bron
-     * @param bank1 bron bank
-     * @param rek2 doel
-     * @param bank2 doel bank
+     * @param bronReknr bronrekening
+     * @param doelReknr doelrekening
      * @param bedrag het over te maken bedrag
      * @return true als gelukt, false als gefaald
      */
-    public boolean maakOver(int rek1, int rek2, Money bedrag);
+    public boolean maakOver(int bronReknr, int doelReknr, Money bedrag);
     
+    /**
+     * Berekend het eerst volgende vrije bankrekeningnummer
+     * @return het eerst volgende vrije bankrekeningnummer
+     */
     public int nextBankNr();
     
+    /**
+     * Voegt een bank toe aan de centrale bank
+     * @param bank de toe te voegen bank
+     * @return true als gelukt, false als gefaald
+     */
     public boolean addBank(IBank bank);
     
+    /**
+     * Haalt de rekening op van het meegegeven rekeningnummer
+     * @param rekenNr het rekeningnummer van de rekening
+     * @return de bij het rekeningnummer hoorende rekening
+     */
     public IRekening getRekening(int rekenNr);
     
 }

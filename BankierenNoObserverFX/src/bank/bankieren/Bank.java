@@ -9,9 +9,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Bank implements IBank {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -8728841131739353765L;
     private Map<Integer, IRekeningTbvBank> accounts;
     private Collection<IKlant> clients;
@@ -94,9 +91,7 @@ public class Bank implements IBank {
                         
                         return true;
                     }
-                    
                 }
-                
             }
             
             Money negative = Money.difference(new Money(0, money.getCurrency()),
@@ -121,10 +116,5 @@ public class Bank implements IBank {
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public boolean muteer(int reknr, Money bedrag) throws NumberDoesntExistException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

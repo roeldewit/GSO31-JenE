@@ -26,12 +26,12 @@ public class CentraleBank implements ICentraleBank {
     }
 
     @Override
-    public boolean maakOver(int rekAfz, int rekBest, Money bedrag)
+    public boolean maakOver(int bronReknr, int doelReknr, Money bedrag)
     {
         boolean afzenderGelukt = false;
         boolean bestemmingGelukt = false;
-        IRekeningTbvBank rekeningAfzender = (IRekeningTbvBank) getRekening(rekAfz);
-        IRekeningTbvBank rekeningBestemming = (IRekeningTbvBank) getRekening(rekBest);
+        IRekeningTbvBank rekeningAfzender = (IRekeningTbvBank) getRekening(bronReknr);
+        IRekeningTbvBank rekeningBestemming = (IRekeningTbvBank) getRekening(doelReknr);
         if(rekeningAfzender != null && rekeningBestemming != null)
         {
             Money negative = Money.difference(new Money(0, bedrag.getCurrency()), bedrag);
