@@ -72,10 +72,19 @@ public class BankierSessieController implements Initializable, RemotePropertyLis
             String eigenaar = rekening.getEigenaar().getNaam() + " te "
                     + rekening.getEigenaar().getPlaats();
             tfNameCity.setText(eigenaar);
-            try {
-                UnicastRemoteObject.exportObject(this, 1100);
-            } catch (ExportException ex) {
-                UnicastRemoteObject.exportObject(this, 1101);
+            int exportPort = 1100;
+            boolean poortGevonden = false;
+            while(poortGevonden == false)
+            {
+                try
+                {
+                    UnicastRemoteObject.exportObject(this, exportPort);
+                    poortGevonden = true;
+                }
+                catch(RemoteException ex)
+                {
+                    exportPort++;
+                }
             }
             sessie.addListener(this, "saldo");
         } catch (InvalidSessionException ex) {
