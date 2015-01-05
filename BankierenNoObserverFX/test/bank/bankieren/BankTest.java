@@ -6,6 +6,8 @@ package bank.bankieren;
  * and open the template in the editor.
  */
 
+import bank.internettoegang.CentraleBank;
+import bank.internettoegang.ICentraleBank;
 import fontys.util.NumberDoesntExistException;
 import static org.hamcrest.CoreMatchers.not;
 import org.junit.After;
@@ -70,7 +72,8 @@ public class BankTest {
         String klantnaam = "Eric";
         String klantplaats = "Weert";
 
-        IBank ing = new Bank(banknaam);
+        ICentraleBank centrale = new CentraleBank();
+        IBank ing = new Bank(banknaam, centrale);
 
         assertEquals("Banknaam klopt niet", "ING", ing.getName());
 
@@ -153,7 +156,8 @@ public class BankTest {
         String klantnaam2 = "Joris";
         String klantplaats2 = "Geleen";
 
-        IBank ing = new Bank(banknaam);
+        ICentraleBank centrale = new CentraleBank();
+        IBank ing = new Bank(banknaam, centrale);
 
         int rekeningNr1 = ing.openRekening(klantnaam, klantplaats);
         int rekeningNr2 = ing.openRekening(klantnaam2, klantplaats2);
@@ -243,7 +247,8 @@ public class BankTest {
     @Test
     public void getRekening()
     {
-        IBank ABN = new Bank("ABN");
+        ICentraleBank centrale = new CentraleBank();
+        IBank ABN = new Bank("ABN", centrale);
         int rekeningNummer = ABN.openRekening("Karel", "Eindhoven");
         
         assertNull("Rekening mag niet bestaan", ABN.getRekening(92340988));
@@ -256,15 +261,16 @@ public class BankTest {
     @Test
     public void getName()
     {
-        IBank ABN = new Bank("ABN");
+        ICentraleBank centrale = new CentraleBank();
+        IBank ABN = new Bank("ABN", centrale);
         int rekeningNummer = ABN.openRekening("Karel", "Eindhoven");
         
         assertEquals("Naam niet gelijk", "ABN", ABN.getName());
         
-        IBank ING = new Bank("");
+        IBank ING = new Bank("", centrale);
         assertEquals("Naam niet gelijk", "", ING.getName());
         
-        IBank fortis = new Bank("    ");
+        IBank fortis = new Bank("    ", centrale);
         assertEquals("Naam niet gelijk", "    ", fortis.getName());
     }
 }

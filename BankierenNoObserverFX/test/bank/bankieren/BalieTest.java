@@ -7,8 +7,10 @@ package bank.bankieren;
  */
 
 import bank.internettoegang.Balie;
+import bank.internettoegang.CentraleBank;
 import bank.internettoegang.IBalie;
 import bank.internettoegang.IBankiersessie;
+import bank.internettoegang.ICentraleBank;
 import fontys.util.InvalidSessionException;
 import java.rmi.RemoteException;
 import static org.hamcrest.CoreMatchers.not;
@@ -67,8 +69,8 @@ public class BalieTest {
          * gegenereerde accountnaam(8 karakters lang) waarmee er toegang tot de
          * nieuwe bankrekening kan worden verkregen
          */
-
-        IBank bank = new Bank("ING");
+        ICentraleBank centrale = new CentraleBank();
+        IBank bank = new Bank("ING", centrale);
         try
         {
             IBalie balie = new Balie(bank);
@@ -137,8 +139,8 @@ public class BalieTest {
          * tot de bankrekening die hoort bij het betreffende login- account mits
          * accountnaam en wachtwoord matchen, anders null
          */
-        
-        IBank bank = new Bank("ABN");
+        ICentraleBank centrale = new CentraleBank();
+        IBank bank = new Bank("ABN", centrale);
         try
         {
             IBalie balie = new Balie(bank);

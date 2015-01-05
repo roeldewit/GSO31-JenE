@@ -6,7 +6,9 @@ package bank.bankieren;
  * and open the template in the editor.
  */
 import bank.internettoegang.Bankiersessie;
+import bank.internettoegang.CentraleBank;
 import bank.internettoegang.IBankiersessie;
+import bank.internettoegang.ICentraleBank;
 import fontys.util.InvalidSessionException;
 import fontys.util.NumberDoesntExistException;
 import java.rmi.RemoteException;
@@ -59,7 +61,8 @@ public class SessieTest {
          */
         try
         {
-            IBank bank = new Bank("ING");
+            ICentraleBank centrale = new CentraleBank();
+            IBank bank = new Bank("ING", centrale);
             int bankrekeningnummer = bank.openRekening("Eric", "Weert");
             IBankiersessie sessie = new Bankiersessie(bankrekeningnummer, bank);
 
