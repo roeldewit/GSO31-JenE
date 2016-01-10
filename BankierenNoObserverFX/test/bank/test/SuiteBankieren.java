@@ -7,6 +7,7 @@ package bank.test;
 
 import bank.bankieren.BalieTest;
 import bank.bankieren.BankTest;
+import bank.bankieren.RekeningTest;
 import bank.bankieren.SessieTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -17,7 +18,7 @@ import org.junit.runners.Suite;
  * @author Astrid
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ BalieTest.class, BankTest.class, SessieTest.class })
+@Suite.SuiteClasses({ BalieTest.class, BankTest.class, RekeningTest.class, SessieTest.class })
 public class SuiteBankieren {
     
 }

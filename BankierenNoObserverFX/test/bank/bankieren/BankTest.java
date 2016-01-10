@@ -198,7 +198,7 @@ public class BankTest {
      * bankrekeningnummers onbekend is
      */
     @Test (expected = RuntimeException.class)
-    public void maakOverFoutBron() throws NumberDoesntExistException, RuntimeException
+    public void maakOverFoutBron() throws NumberDoesntExistException
     {
         System.out.println("BankTest - @Test: maakOverFoutBron()");
 
@@ -219,7 +219,7 @@ public class BankTest {
      * bankrekeningnummers onbekend is
      */
     @Test (expected = RuntimeException.class)
-    public void maakOverFoutBedrag0() throws NumberDoesntExistException, RuntimeException
+    public void maakOverFoutBedrag0() throws NumberDoesntExistException
     {
         System.out.println("BankTest - @Test: maakOverFoutBedrag0()");
 
