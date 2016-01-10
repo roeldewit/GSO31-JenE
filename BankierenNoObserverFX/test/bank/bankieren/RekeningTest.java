@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 public class RekeningTest {
     
     private static IKlant klant;
-    private Rekening rekening;
+    private IRekeningTbvBank rekening;
     
     public RekeningTest() {
     }
@@ -62,9 +62,9 @@ public class RekeningTest {
         assertEquals("Kredietlimiet is -100", -10000, rekening.getKredietLimietInCenten());
         
         // Mutaties verwerken en controleren
-        rekening.muteer(new Money(10000, "€"));
+        assertTrue("Mutatie positief", rekening.muteer(new Money(10000, "€")));
         assertEquals("Saldo is 100", new Money(10000, "€"), rekening.getSaldo());
-        rekening.muteer(new Money(-20000, "€"));
+        assertTrue("Mutatie negatief", rekening.muteer(new Money(-20000, "€")));
         assertEquals("Saldo is -100", new Money(-10000, "€"), rekening.getSaldo());
     }
 
