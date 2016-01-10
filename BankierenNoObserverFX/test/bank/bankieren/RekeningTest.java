@@ -98,4 +98,17 @@ public class RekeningTest {
         // Bedrag van €0,00 verwerken
         rekening.muteer(new Money(0, "€"));
     }
+
+    /**
+     * Test methode voor bank.bankieren.Rekening#muteer()
+     * 
+     * NullPointerException bij waarde "Null" (niet opgevangen in code)
+     */
+    @Test (expected = NullPointerException.class)
+    public void testMuteerFoutNull() {
+        System.out.println("RekeningTest - @Test: testMuteerFoutNull()");
+        
+        // Null waarde
+        rekening.muteer(null);
+    }
 }
