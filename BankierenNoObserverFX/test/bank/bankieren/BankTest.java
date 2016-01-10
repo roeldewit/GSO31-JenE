@@ -127,6 +127,7 @@ public class BankTest {
     {
         System.out.println("BankTest - @Test: openRekeningOngeldigeWaarde()");
 
+        // Foutieve invoeren
         assertEquals("Bankrekening wordt geopend", -1, abn.openRekening("Karel", ""));
         assertEquals("Bankrekening wordt geopend", -1, abn.openRekening("", "Weert"));
     }
@@ -140,6 +141,8 @@ public class BankTest {
     public void openRekeningFoutNull()
     {
         System.out.println("BankTest - @Test: openRekeningFoutNull()");
+        
+        // Null waarde
         ing.openRekening(null, null);
     }
     
@@ -199,6 +202,7 @@ public class BankTest {
     {
         System.out.println("BankTest - @Test: maakOverFoutBron()");
 
+        // Rekeningnummers zijn gelijk
         ing.maakOver(rekeningNr2, rekeningNr2, new Money(1000, "€"));
     }
 
@@ -219,6 +223,7 @@ public class BankTest {
     {
         System.out.println("BankTest - @Test: maakOverFoutBedrag0()");
 
+        // Bedrag is 0
         ing.maakOver(rekeningNr1, rekeningNr2, new Money(0, "€"));
     }    
     
@@ -239,6 +244,7 @@ public class BankTest {
     {
         System.out.println("BankTest - @Test: maakOverFoutRekeningNr()");
 
+        // Foutieve invoer
         ing.maakOver(rekeningNr1, 9999999, new Money(1000, "€"));
     }
 
@@ -259,6 +265,7 @@ public class BankTest {
     {
         System.out.println("BankTest - @Test: maakOverFoutNull()");
 
+        // Null waarde
         ing.maakOver(rekeningNr1, rekeningNr2, null);
     }
 
