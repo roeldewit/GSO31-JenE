@@ -23,141 +23,179 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Eric
+ * @author Astrid
  */
 public class BalieTest {
 
+    private static IBalie balieIng;
+    private String accountnaam;
+    private IBankiersessie sessie;
+    
     public BalieTest()
     {
     }
 
+    /**
+     * @throws java.rmi.RemoteException
+     */
     @BeforeClass
-    public static void setUpClass()
+    public static void setUpClass() throws RemoteException
     {
+        System.out.println("BalieTest - @BeforeClass: setUpClass()");
+        ICentraleBank centrale = new CentraleBank();
+        IBank ing = new Bank("ING", centrale);
+        balieIng = new Balie(ing);
     }
 
     @AfterClass
     public static void tearDownClass()
     {
+        System.out.println("BalieTest - @AfterClass: tearDownClass()");
+        balieIng = null;
     }
 
+    /**
+     * @throws java.rmi.RemoteException
+     */
     @Before
-    public void setUp()
+    public void setUp() throws RemoteException
     {
+        System.out.println("BalieTest - @Before: setUp()");
+        accountnaam = balieIng.openRekening("Eric", "Weert", "TestWW");
+        sessie = balieIng.logIn(accountnaam, "TestWW");
     }
 
     @After
     public void tearDown()
     {
+        System.out.println("BalieTest - @After: tearDown()");
+        accountnaam = null;
+        sessie = null;
     }
 
+    /**
+     * Test methode voor bank.internettoegang.Balie#openRekening()
+     * 
+     * creatie van een nieuwe bankrekening; het gegenereerde
+     * bankrekeningnummer is identificerend voor de nieuwe bankrekening en
+     * heeft een saldo van 0 euro
+     *
+     * @param naam van de eigenaar van de nieuwe bankrekening
+     * @param plaats de woonplaats van de eigenaar van de nieuwe
+     * bankrekening
+     * @param wachtwoord van het account waarmee er toegang kan worden
+     * verkregen tot de nieuwe bankrekening
+     * @return null zodra naam of plaats een lege string of wachtwoord
+     * minder dan vier of meer dan acht karakters lang is en anders de
+     * gegenereerde accountnaam(8 karakters lang) waarmee er toegang tot de
+     * nieuwe bankrekening kan worden verkregen
+     * @throws fontys.util.InvalidSessionException
+     * @throws java.rmi.RemoteException
+     */
     @Test
-    public void openRekening()
+    public void openRekening() throws InvalidSessionException, RemoteException
     {
-        /**
-         * creatie van een nieuwe bankrekening; het gegenereerde
-         * bankrekeningnummer is identificerend voor de nieuwe bankrekening en
-         * heeft een saldo van 0 euro
-         *
-         * @param naam van de eigenaar van de nieuwe bankrekening
-         * @param plaats de woonplaats van de eigenaar van de nieuwe
-         * bankrekening
-         * @param wachtwoord van het account waarmee er toegang kan worden
-         * verkregen tot de nieuwe bankrekening
-         * @return null zodra naam of plaats een lege string of wachtwoord
-         * minder dan vier of meer dan acht karakters lang is en anders de
-         * gegenereerde accountnaam(8 karakters lang) waarmee er toegang tot de
-         * nieuwe bankrekening kan worden verkregen
-         */
-        ICentraleBank centrale = new CentraleBank();
-        IBank bank = new Bank("ING", centrale);
-        try
-        {
-            IBalie balie = new Balie(bank);
-            String naam = "Eric";
-            String plaats = "Weert";
-            String wachtwoord = "EDR1";
-            String accountnaam = balie.openRekening(naam, plaats, wachtwoord);
-            String accountnaam2 = balie.openRekening(naam, plaats, wachtwoord);
-            assertThat("Rekeningnummer is gelijk", accountnaam, not(accountnaam2));
+        System.out.println("BalieTest - @Test: openRekening()");
 
-            IBankiersessie sessie = balie.logIn(accountnaam, wachtwoord);
-            try
-            {
-                assertEquals("Saldo niet gelijk", new Money(0, "€"), sessie.getRekening().getSaldo());
-                assertEquals("Naam niet gelijk", naam, sessie.getRekening().getEigenaar().getNaam());
-            }
-            catch (InvalidSessionException ex)
-            {
-                System.out.println("Invalid session: " + ex.getMessage());
-            }
-            
-            /**
-             * Test of de woonplaats, naam, wachtwoord verkeerd ingevoerd kan worden
-             * er wordt nooit IllegalArgument exception opgegooid?
-             */
-            assertNull("Rekening is aangemaakt", balie.openRekening("  ", "", "ddddgjgdghjgghhjjhjhdjjhdgdjhdhj"));
-            assertNull("Rekening is aangemaakt", balie.openRekening("", "", "EDR1"));
-            assertNull("Rekening is aangemaakt", balie.openRekening("", " ", "      "));
-            
-            /**
-             * Test of de woonplaats, naam, wachtwoord null kunnen zijn
-             * er wordt nooit IllegalArgument exception opgegooid?
-             */
-            
-            try
-            {
-                assertNull("Rekening is aangemaakt", balie.openRekening(null, null, null));
-                assertNull("Rekening is aangemaakt", balie.openRekening("Eric", null, null));
-                assertNull("Rekening is aangemaakt", balie.openRekening("Eric", "Weert", null));
-                
-                assertNull("Rekening is aangemaakt", balie.openRekening(null, null, "sdlkfj"));
-                assertNull("Rekening is aangemaakt", balie.openRekening(null, "Weert", null));
-                assertNull("Rekening is aangemaakt", balie.openRekening(null, null, "lksjdf"));
-            }
-            catch (NullPointerException ex)
-            {
-                  fail("Geen controle op null values");
-            }
-        }
-        catch (RemoteException ex)
-        {
-            System.out.println("Remote ex: " + ex.getMessage());
-        }
+        String accountnaam2 = balieIng.openRekening("Eric", "Weert", "TestWW");
+        // Gegenereerde accountnaam is ongelijk alhoewel de klantgegevens volledig overeen komen
+        assertThat("Rekeningnummer is gelijk", accountnaam, not(accountnaam2));
+
+        // Bij openen bankrekening is het saldo €0,00
+        assertEquals("Saldo niet gelijk", new Money(0, "€"), sessie.getRekening().getSaldo());
+        
+        // Bij openen bankrekening is naam klant juist opgeslagen
+        assertEquals("Naam niet gelijk", "Eric", sessie.getRekening().getEigenaar().getNaam());
     }
 
+    /**
+     * Test methode voor bank.internettoegang.Balie#openRekening()
+     * 
+     * Test of de woonplaats, naam, wachtwoord verkeerd ingevoerd kan worden
+     * 
+     * Waarde null wordt gereturned i.v.m. ongeldige waarden
+     * @throws java.rmi.RemoteException
+     */
     @Test
-    public void login()
+    public void openRekeningOngeldigeWaarde() throws RemoteException
     {
-        /**
-         * er wordt een sessie opgestart voor het login-account met de naam
-         * accountnaam mits het wachtwoord correct is
-         *
-         * @param accountnaam
-         * @param wachtwoord
-         * @return de gegenereerde sessie waarbinnen de gebruiker toegang krijgt
-         * tot de bankrekening die hoort bij het betreffende login- account mits
-         * accountnaam en wachtwoord matchen, anders null
-         */
-        ICentraleBank centrale = new CentraleBank();
-        IBank bank = new Bank("ABN", centrale);
-        try
-        {
-            IBalie balie = new Balie(bank);
-            String naam= "Eric";
-            String woonplaats = "Weert";
-            String wachtwoord = "Eric1";
-            String accountnaam = balie.openRekening(naam, woonplaats, wachtwoord);
-            IBankiersessie sessie = balie.logIn(accountnaam, wachtwoord);
-            assertNotNull("Geen sessie", sessie);
-            assertNull("Verkeerd wachtwoord", balie.logIn(accountnaam, "Eric1 "));
-            assertNull("Verkeerde accountnaam", balie.logIn("Eric ", wachtwoord));
-            assertNull("Onbekend account", balie.logIn("Karel", "Karel"));
-        }
-        catch(RemoteException ex)
-        {
-            System.out.println("Remote ex: " + ex.getMessage());
-        }
+        System.out.println("BalieTest - @Test: openRekeningOngeldigeWaarde()");
+
+        // Foutieve invoeren
+        assertNull("Ongeldig wachtwoord", balieIng.openRekening("Klant", "Eindhoven", "ddddgjgdghjgggdjhdhj"));
+        assertNull("Ongeldige klantnaam", balieIng.openRekening("", "Eindhoven", "EDR1"));
+        assertNull("Ongeldige plaatsnaam", balieIng.openRekening("Klant", "", "Test"));
+    }
+
+    /**
+     * Test methode voor bank.internettoegang.Balie#openRekening()
+     * 
+     * NullPointerException bij waarde "Null" (niet opgevangen in code)
+     * @throws java.rmi.RemoteException
+     */
+    @Test (expected = NullPointerException.class)
+    public void openRekeningFoutNull() throws RemoteException
+    {
+        System.out.println("BalieTest - @Test: openRekeningFoutNull()");
+
+        // Waarde null
+        balieIng.openRekening("Eric", null, "TestWW");
+    }
+
+    /**
+     * Test methode voor bank.internettoegang.Balie#logIn()
+     * 
+     * er wordt een sessie opgestart voor het login-account met de naam
+     * accountnaam mits het wachtwoord correct is
+     *
+     * @param accountnaam
+     * @param wachtwoord
+     * @return de gegenereerde sessie waarbinnen de gebruiker toegang krijgt
+     * tot de bankrekening die hoort bij het betreffende login- account mits
+     * accountnaam en wachtwoord matchen, anders null
+     * @throws java.rmi.RemoteException
+     */
+    @Test
+    public void logIn() throws RemoteException
+    {
+        System.out.println("BalieTest - @Test: logIn()");
+        
+        // Sessie is aangemaakt
+        assertNotNull("Geen sessie", sessie);
+        
+        IBankiersessie sessie2 = balieIng.logIn(accountnaam, "TestWW");
+        // Sessie2 is aangemaakt
+        assertNotNull("Geen sessie", sessie2);
+        
+        // Sessies zijn geldig
+        assertTrue("Sessie ongeldig", sessie.isGeldig());
+        assertTrue("Sessie ongeldig", sessie2.isGeldig());
+        
+        // Sessies zijn ongelijk
+        assertThat("Sessies zijn gelijk", sessie, not(sessie2));
+    }
+
+    /**
+     * Test methode voor bank.internettoegang.Balie#logIn()
+     * 
+     * er wordt een sessie opgestart voor het login-account met de naam
+     * accountnaam mits het wachtwoord correct is
+     *
+     * Onjuiste invoer (sessie wordt niet opgestart), Null wordt gereturned
+     * @throws java.rmi.RemoteException
+     */
+    @Test
+    public void logInFouteInvoer() throws RemoteException
+    {
+        System.out.println("BalieTest - @Test: logInFouteInvoer()");
+        
+        // Sessie is aangemaakt
+        assertNotNull("Geen sessie", sessie);
+        
+        // Foutieve invoeren
+        assertNull("Verkeerd wachtwoord", balieIng.logIn(accountnaam, "Eric1 "));
+        assertNull("Verkeerde accountnaam", balieIng.logIn("Eric ", "TestWW"));
+        assertNull("Onbekend account", balieIng.logIn("Karel", "Karel"));
     }
 
 }
