@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="nl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>BankierSessieController.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;BankierenNoObserverFX&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">bank.gui</a> &gt; <span class="el_source">BankierSessieController.java</span></div><h1>BankierSessieController.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package bank.gui;
+
+import bank.bankieren.IRekening;
+import bank.bankieren.Money;
+import bank.internettoegang.IBalie;
+import bank.internettoegang.IBankiersessie;
+import fontys.observer.RemotePropertyListener;
+import fontys.util.InvalidSessionException;
+import fontys.util.NumberDoesntExistException;
+import java.beans.PropertyChangeEvent;
+import java.io.Serializable;
+import java.net.URL;
+import java.rmi.RemoteException;
+import java.rmi.server.ExportException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+
+/**
+ * FXML Controller class
+ *
+ * @author frankcoenen
+ */
+<span class="nc" id="L38">public class BankierSessieController implements Initializable, RemotePropertyListener {</span>
+
+    @FXML
+    private Hyperlink hlLogout;
+
+    @FXML
+    private TextField tfNameCity;
+    @FXML
+    private TextField tfAccountNr;
+    @FXML
+    private TextField tfBalance;
+    @FXML
+    private TextField tfAmount;
+    @FXML
+    private TextField tfToAccountNr;
+    @FXML
+    private Button btTransfer;
+    @FXML
+
+    private TextArea taMessage;
+
+    private BankierClient application;
+    private IBalie balie;
+    private IBankiersessie sessie;
+
+    public void setApp(BankierClient application, IBalie balie, IBankiersessie sessie) {
+<span class="nc" id="L64">        this.balie = balie;</span>
+<span class="nc" id="L65">        this.sessie = sessie;</span>
+<span class="nc" id="L66">        this.application = application;</span>
+<span class="nc" id="L67">        IRekening rekening = null;</span>
+        try {
+<span class="nc" id="L69">            rekening = sessie.getRekening();</span>
+<span class="nc" id="L70">            tfAccountNr.setText(rekening.getNr() + &quot;&quot;);</span>
+<span class="nc" id="L71">            tfBalance.setText(rekening.getSaldo() + &quot;&quot;);</span>
+<span class="nc" id="L72">            String eigenaar = rekening.getEigenaar().getNaam() + &quot; te &quot;</span>
+<span class="nc" id="L73">                    + rekening.getEigenaar().getPlaats();</span>
+<span class="nc" id="L74">            tfNameCity.setText(eigenaar);</span>
+<span class="nc" id="L75">            int exportPort = 1100;</span>
+<span class="nc" id="L76">            boolean poortGevonden = false;</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">            while(poortGevonden == false)</span>
+            {
+                try
+                {
+<span class="nc" id="L81">                    UnicastRemoteObject.exportObject(this, exportPort);</span>
+<span class="nc" id="L82">                    poortGevonden = true;</span>
+                }
+<span class="nc" id="L84">                catch(RemoteException ex)</span>
+                {
+<span class="nc" id="L86">                    exportPort++;</span>
+<span class="nc" id="L87">                }</span>
+            }
+<span class="nc" id="L89">            sessie.addListener(this, &quot;saldo&quot;);</span>
+<span class="nc" id="L90">        } catch (InvalidSessionException ex) {</span>
+<span class="nc" id="L91">            taMessage.setText(&quot;bankiersessie is verlopen&quot;);</span>
+            try {
+<span class="nc" id="L93">                sessie.removeListener(this, null);</span>
+<span class="nc" id="L94">            } catch (RemoteException ex1) {</span>
+<span class="nc" id="L95">                taMessage.setText(&quot;verbinding verbroken&quot;);</span>
+<span class="nc" id="L96">                Logger.getLogger(BankierSessieController.class.getName()).log(Level.SEVERE, null, ex1);</span>
+<span class="nc" id="L97">            }</span>
+<span class="nc" id="L98">            Logger.getLogger(BankierSessieController.class.getName()).log(Level.SEVERE, null, ex);</span>
+
+<span class="nc" id="L100">        } catch (RemoteException ex) {</span>
+<span class="nc" id="L101">            taMessage.setText(&quot;verbinding verbroken&quot;);</span>
+<span class="nc" id="L102">            Logger.getLogger(BankierSessieController.class.getName()).log(Level.SEVERE, null, ex);</span>
+<span class="nc" id="L103">        }</span>
+<span class="nc" id="L104">    }</span>
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+<span class="nc" id="L111">    }</span>
+
+    @FXML
+    private void logout(ActionEvent event) {
+        try {
+<span class="nc" id="L116">            sessie.removeListener(this, null);</span>
+<span class="nc" id="L117">            sessie.logUit();</span>
+<span class="nc" id="L118">            application.gotoLogin(balie, &quot;&quot;);</span>
+<span class="nc" id="L119">        } catch (RemoteException e) {</span>
+<span class="nc" id="L120">            e.printStackTrace();</span>
+<span class="nc" id="L121">        }</span>
+<span class="nc" id="L122">    }</span>
+
+    @FXML
+    private void transfer(ActionEvent event) {
+        try {
+<span class="nc" id="L127">            int from = Integer.parseInt(tfAccountNr.getText());</span>
+<span class="nc" id="L128">            int to = Integer.parseInt(tfToAccountNr.getText());</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">            if (from == to) {</span>
+<span class="nc" id="L130">                taMessage.setText(&quot;can't transfer money to your own account&quot;);</span>
+            }
+<span class="nc" id="L132">            long centen = (long) (Double.parseDouble(tfAmount.getText()) * 100);</span>
+<span class="nc" id="L133">            sessie.maakOver(to, new Money(centen, Money.EURO));</span>
+<span class="nc" id="L134">        } catch (RemoteException e1) {</span>
+<span class="nc" id="L135">            taMessage.setText(&quot;verbinding verbroken&quot;);</span>
+<span class="nc" id="L136">        } catch (NumberDoesntExistException | InvalidSessionException e1) {</span>
+            try {
+<span class="nc" id="L138">                sessie.removeListener(this, null);</span>
+<span class="nc" id="L139">            } catch (RemoteException ex) {</span>
+<span class="nc" id="L140">                taMessage.setText(&quot;verbinding verbroken&quot;);</span>
+<span class="nc" id="L141">            }</span>
+<span class="nc" id="L142">            taMessage.setText(e1.getMessage());</span>
+<span class="nc" id="L143">        }</span>
+<span class="nc" id="L144">    }</span>
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) throws RemoteException {
+<span class="nc" id="L148">        Platform.runLater(() -&gt; {</span>
+<span class="nc" id="L149">            tfBalance.setText(evt.getNewValue() + &quot;&quot;);</span>
+<span class="nc" id="L150">        });</span>
+<span class="nc" id="L151">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

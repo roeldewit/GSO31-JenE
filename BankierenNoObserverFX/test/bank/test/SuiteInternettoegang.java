@@ -6,18 +6,16 @@
 package bank.test;
 
 import bank.internettoegang.BalieTest;
-import bank.bankieren.BankTest;
-import bank.bankieren.RekeningTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
- * The JUnit test suite that contains tests from the test package bank.bankieren.
+ * The JUnit test suite that contains tests from the test package bank.internettoegang.
  *
  * @author Astrid
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ BankTest.class, RekeningTest.class })
-public class SuiteBankieren {
+@Suite.SuiteClasses({ BalieTest.class })
+public class SuiteInternettoegang {
     
 }

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="nl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Rekening.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;BankierenNoObserverFX&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">bank.bankieren</a> &gt; <span class="el_source">Rekening.java</span></div><h1>Rekening.java</h1><pre class="source lang-java linenums">package bank.bankieren;
+
+import fontys.observer.BasicPublisher;
+import fontys.observer.RemotePropertyListener;
+import java.rmi.RemoteException;
+
+class Rekening implements IRekeningTbvBank {
+
+    private static final long serialVersionUID = 7221569686169173632L;
+    private static final int KREDIETLIMIET = -10000;
+    private int nr;
+    private IKlant eigenaar;
+    private Money saldo;
+    private transient BasicPublisher publisher;
+
+    /**
+     * creatie van een bankrekening met saldo van 0.0&lt;br&gt;
+     * de constructor heeft package-access omdat de PersistentAccount-objecten
+     * door een het PersistentBank-object worden beheerd
+     *
+     * @see banking.persistence.PersistentBank
+     * @param number het bankrekeningnummer
+     * @param klant de eigenaar van deze rekening
+     * @param currency de munteenheid waarin het saldo is uitgedrukt
+     */
+    Rekening(int number, IKlant klant, String currency) {
+<span class="fc" id="L27">        this(number, klant, new Money(0, currency));</span>
+<span class="fc" id="L28">    }</span>
+
+    /**
+     * creatie van een bankrekening met saldo saldo&lt;br&gt;
+     * de constructor heeft package-access omdat de PersistentAccount-objecten
+     * door een het PersistentBank-object worden beheerd
+     *
+     * @see banking.persistence.PersistentBank
+     * @param number het bankrekeningnummer
+     * @param name de naam van de eigenaar
+     * @param city de woonplaats van de eigenaar
+     * @param currency de munteenheid waarin het saldo is uitgedrukt
+     */
+<span class="fc" id="L41">    Rekening(int number, IKlant klant, Money saldo) {</span>
+<span class="fc" id="L42">        this.nr = number;</span>
+<span class="fc" id="L43">        this.eigenaar = klant;</span>
+<span class="fc" id="L44">        this.saldo = saldo;</span>
+<span class="fc" id="L45">        publisher = new BasicPublisher(new String[]{&quot;saldo&quot;});</span>
+<span class="fc" id="L46">    }</span>
+
+    public boolean equals(Object obj) {
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        return nr == ((IRekening) obj).getNr();</span>
+    }
+
+    public int getNr() {
+<span class="nc" id="L53">        return nr;</span>
+    }
+
+    public String toString() {
+<span class="nc" id="L57">        return nr + &quot;: &quot; + eigenaar.toString();</span>
+    }
+
+    boolean isTransferPossible(Money bedrag) {
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        return (bedrag.getCents() + saldo.getCents() &gt;= KREDIETLIMIET);</span>
+    }
+
+    public IKlant getEigenaar() {
+<span class="fc" id="L65">        return eigenaar;</span>
+    }
+
+    public Money getSaldo() {
+<span class="fc" id="L69">        return saldo;</span>
+    }
+
+    public boolean muteer(Money bedrag) {
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (bedrag.getCents() == 0) {</span>
+<span class="fc" id="L74">            throw new RuntimeException(&quot; bedrag = 0 bij aanroep 'muteer'&quot;);</span>
+        }
+
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (isTransferPossible(bedrag)) {</span>
+<span class="fc" id="L78">            Money previousSaldo = saldo;</span>
+<span class="fc" id="L79">            saldo = Money.sum(saldo, bedrag);</span>
+<span class="fc" id="L80">            publisher.inform(this, &quot;saldo&quot;, previousSaldo, saldo);</span>
+<span class="fc" id="L81">            return true;</span>
+        }
+<span class="fc" id="L83">        return false;</span>
+    }
+
+    @Override
+    public int getKredietLimietInCenten() {
+<span class="fc" id="L88">        return KREDIETLIMIET;</span>
+    }
+
+    @Override
+    public void addListener(RemotePropertyListener listener, String property) throws RemoteException {
+<span class="nc" id="L93">        publisher.addListener(listener, property);</span>
+<span class="nc" id="L94">    }</span>
+
+    @Override
+    public void removeListener(RemotePropertyListener listener, String property) throws RemoteException {
+<span class="nc" id="L98">        publisher.addListener(listener, property);</span>
+<span class="nc" id="L99">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
