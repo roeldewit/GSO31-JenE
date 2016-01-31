@@ -7,13 +7,16 @@ package client;
 
 import AEX.IFonds;
 import AEX.IEffectenbeurs;
+import client.stub.StubEffectenbeurs;
 import fontys.observer.RemotePropertyListener;
 import java.beans.PropertyChangeEvent;
+import java.math.RoundingMode;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,6 +64,18 @@ public class BannerController implements RemotePropertyListener {
             }
         }
 
+        // Use stub if binding hasn't succeeded
+        if (beurs == null) {
+            try {
+                StubEffectenbeurs stubBeurs = new StubEffectenbeurs();
+                beurs = stubBeurs;
+                System.out.println("Connected to Stub");
+            } catch (RemoteException ex) {
+                Logger.getLogger(BannerController.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("No connection established");
+            }              
+        }
+        
         if (beurs != null) {
             try {
                 UnicastRemoteObject.exportObject(this, 1100);
@@ -75,8 +90,10 @@ public class BannerController implements RemotePropertyListener {
     public void propertyChange(PropertyChangeEvent evt) throws RemoteException {
         String string = "";
         IFonds[] koersen = (IFonds[]) evt.getNewValue();
+        DecimalFormat df = new DecimalFormat("#.000");
+        df.setRoundingMode(RoundingMode.CEILING);
         for (IFonds f : koersen) {
-            string = string.concat(f.getNaam() + ": " + f.getKoers() + " - ");
+            string = string.concat(f.getNaam() + ": " + df.format(f.getKoers()) + "  -  ");
         }
         controller.setKoersen(string);
     }
