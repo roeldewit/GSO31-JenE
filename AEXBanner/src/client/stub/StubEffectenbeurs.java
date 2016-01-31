@@ -86,6 +86,19 @@ public class StubEffectenbeurs extends UnicastRemoteObject implements IEffectenb
             new StubFonds("Wolters Kluwer", 29.895)
         };
         fondsen = fondsen1;
+
+        // Show content of stock arrays for test purposes
+        System.out.println("----------------------------------");
+        System.out.println("Stub - Stocks: values first array");
+        for (IFonds f : fondsen1) {
+            System.out.println("Stock name: "+f.getNaam()+", stock price: "+f.getKoers());
+        }
+        System.out.println("----------------------------------");
+        System.out.println("Stub - Stocks: values second array");
+        for (IFonds f : fondsen2) {
+            System.out.println("Stock name: "+f.getNaam()+", stock price: "+f.getKoers());
+        }
+        System.out.println("----------------------------------");
         System.out.println("Stub - Stocks: first array");
         publisher = new BasicPublisher(new String[]{"koersen"});
 
