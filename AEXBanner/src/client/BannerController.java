@@ -56,10 +56,12 @@ public class BannerController implements RemotePropertyListener {
             } catch (RemoteException ex) {
                 System.out.println("Cannot bind Effectenbeurs");
                 System.out.println("RemoteException: " + ex.getMessage());
+                System.out.println("Attempting to create a stub");
                 beurs = null;
             } catch (NotBoundException ex) {
                 System.out.println("Cannot bind Effectenbeurs");
                 System.out.println("NotBoundException: " + ex.getMessage());
+                System.out.println("Attempting to create a stub");
                 beurs = null;
             }
         }
