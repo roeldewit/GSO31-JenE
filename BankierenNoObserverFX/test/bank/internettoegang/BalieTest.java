@@ -1,4 +1,4 @@
-package bank.bankieren;
+package bank.internettoegang;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -6,6 +6,9 @@ package bank.bankieren;
  * and open the template in the editor.
  */
 
+import bank.bankieren.Bank;
+import bank.bankieren.IBank;
+import bank.bankieren.Money;
 import bank.internettoegang.Balie;
 import bank.internettoegang.CentraleBank;
 import bank.internettoegang.IBalie;
@@ -99,13 +102,13 @@ public class BalieTest {
 
         String accountnaam2 = balieIng.openRekening("Eric", "Weert", "TestWW");
         // Gegenereerde accountnaam is ongelijk alhoewel de klantgegevens volledig overeen komen
-        assertThat("Rekeningnummer is gelijk", accountnaam, not(accountnaam2));
+        assertThat("Rekeningnummer moet ongelijk zijn", accountnaam, not(accountnaam2));
 
         // Bij openen bankrekening is het saldo €0,00
-        assertEquals("Saldo niet gelijk", new Money(0, "€"), sessie.getRekening().getSaldo());
+        assertEquals("Saldo moet gelijk zijn", new Money(0, "€"), sessie.getRekening().getSaldo());
         
         // Bij openen bankrekening is naam klant juist opgeslagen
-        assertEquals("Naam niet gelijk", "Eric", sessie.getRekening().getEigenaar().getNaam());
+        assertEquals("Naam moet gelijk zijn", "Eric", sessie.getRekening().getEigenaar().getNaam());
     }
 
     /**
@@ -161,18 +164,18 @@ public class BalieTest {
         System.out.println("BalieTest - @Test: logIn()");
         
         // Sessie is aangemaakt
-        assertNotNull("Geen sessie", sessie);
+        assertNotNull("Sessie moet zijn aangemaakt", sessie);
         
         IBankiersessie sessie2 = balieIng.logIn(accountnaam, "TestWW");
         // Sessie2 is aangemaakt
-        assertNotNull("Geen sessie", sessie2);
-        
+        assertNotNull("Sessie (2) moet zijn aangemaakt", sessie2);
+
         // Sessies zijn geldig
-        assertTrue("Sessie ongeldig", sessie.isGeldig());
-        assertTrue("Sessie ongeldig", sessie2.isGeldig());
+        assertTrue("Sessie moet geldig zijn", sessie.isGeldig());
+        assertTrue("Sessie (2) moet geldig zijn", sessie2.isGeldig());
         
         // Sessies zijn ongelijk
-        assertThat("Sessies zijn gelijk", sessie, not(sessie2));
+        assertThat("Sessies moeten ongelijk zijn", sessie, not(sessie2));
     }
 
     /**
@@ -190,12 +193,12 @@ public class BalieTest {
         System.out.println("BalieTest - @Test: logInFouteInvoer()");
         
         // Sessie is aangemaakt
-        assertNotNull("Geen sessie", sessie);
+        assertNotNull("Sessie moet zijn aangemaakt", sessie);
         
         // Foutieve invoeren
-        assertNull("Verkeerd wachtwoord", balieIng.logIn(accountnaam, "Eric1 "));
-        assertNull("Verkeerde accountnaam", balieIng.logIn("Eric ", "TestWW"));
-        assertNull("Onbekend account", balieIng.logIn("Karel", "Karel"));
+        assertNull("Wachtwoord moet niet geaccepteerd worden", balieIng.logIn(accountnaam, "Eric1 "));
+        assertNull("Accountnaam moet niet geaccepteerd worden", balieIng.logIn("Eric ", "TestWW"));
+        assertNull("Account mag niet bekend zijn", balieIng.logIn("Karel", "Karel"));
     }
 
 }

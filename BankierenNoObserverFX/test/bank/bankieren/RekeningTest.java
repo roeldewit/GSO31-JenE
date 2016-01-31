@@ -58,14 +58,14 @@ public class RekeningTest {
         System.out.println("RekeningTest - @Test: testMuteer()");
         
         // Saldo en kredietlimiet controleren
-        assertEquals("Saldo is 0", new Money(0, "€"), rekening.getSaldo());
-        assertEquals("Kredietlimiet is -100", -10000, rekening.getKredietLimietInCenten());
+        assertEquals("Saldo moet 0 zijn", new Money(0, "€"), rekening.getSaldo());
+        assertEquals("Kredietlimiet moet -100 zijn", -10000, rekening.getKredietLimietInCenten());
         
         // Mutaties verwerken en controleren
-        assertTrue("Mutatie positief", rekening.muteer(new Money(10000, "€")));
-        assertEquals("Saldo is 100", new Money(10000, "€"), rekening.getSaldo());
-        assertTrue("Mutatie negatief", rekening.muteer(new Money(-20000, "€")));
-        assertEquals("Saldo is -100", new Money(-10000, "€"), rekening.getSaldo());
+        assertTrue("Positieve mutatie moet verwerkt worden", rekening.muteer(new Money(10000, "€")));
+        assertEquals("Saldo moet 100 zijn", new Money(10000, "€"), rekening.getSaldo());
+        assertTrue("Negatieve mutatie moet verwerkt worden", rekening.muteer(new Money(-20000, "€")));
+        assertEquals("Saldo moet -100 zijn", new Money(-10000, "€"), rekening.getSaldo());
     }
 
     /**
@@ -78,12 +78,12 @@ public class RekeningTest {
         System.out.println("RekeningTest - @Test: testMuteerLimietOverschreden()");
         
         // Saldo en kredietlimiet controleren
-        assertEquals("Saldo is 0", new Money(0, "€"), rekening.getSaldo());
-        assertEquals("Kredietlimiet is -100", -10000, rekening.getKredietLimietInCenten());
+        assertEquals("Saldo moet 0 zijn", new Money(0, "€"), rekening.getSaldo());
+        assertEquals("Kredietlimiet moet -100 zijn", -10000, rekening.getKredietLimietInCenten());
         
         // Mutaties verwerken en controleren (te hoog bedrag, mutatie wordt niet verwerkt)
-        assertFalse("Limiet overschreden", rekening.muteer(new Money(-15000, "€")));
-        assertEquals("Saldo is 0", new Money(0, "€"), rekening.getSaldo());        
+        assertFalse("Limiet mag niet overschreden worden", rekening.muteer(new Money(-15000, "€")));
+        assertEquals("Saldo moet 0 zijn (mutatie niet verwerkt)", new Money(0, "€"), rekening.getSaldo());        
     }
 
     /**

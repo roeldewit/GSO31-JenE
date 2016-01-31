@@ -91,27 +91,25 @@ public class BankTest {
          */
         int rekeningNr = ing.openRekening(klantnaam, klantplaats);
 
-        assertThat(rekeningNr, not(rekeningNr1));
-
         /**
          * rekeningNr & rekeningNr1 zijn van dezelfde klant (klant1)
          * alleen als de klant, geidentificeerd door naam en plaats, nog niet
          * bestaat wordt er ook een nieuwe klant aangemaakt
          */
-        assertEquals("Klant niet gelijk", ing.getRekening(rekeningNr).getEigenaar(), ing.getRekening(rekeningNr1).getEigenaar());
+        assertEquals("Klant moet gelijk zijn", ing.getRekening(rekeningNr).getEigenaar(), ing.getRekening(rekeningNr1).getEigenaar());
 
         /**
          * rekeningNr & rekeningNr1 zijn van dezelfde klant (klant1)
          * een klant mag verschillende rekeningen hebben bij dezelfde bank (in dit geval twee rekeningen bij de ING)
          */
-        assertThat("Banknummers gelijk", rekeningNr, not(rekeningNr1));
-        assertThat("Banknummers gelijk", rekeningNr1, not(rekeningNr2));
+        assertThat("Banknummers mogen niet gelijk zijn", rekeningNr, not(rekeningNr1));
+        assertThat("Banknummers (2) mogen niet gelijk zijn", rekeningNr1, not(rekeningNr2));
 
         /**
          * rekeningNr2 is van een andere klant (klant2) Beide mogen niet
          * gelijk zijn aan elkaar
          */
-        assertThat("Klant gelijk", ing.getRekening(rekeningNr1).getEigenaar(), not(ing.getRekening(rekeningNr2).getEigenaar()));
+        assertThat("Klant moet ongelijk zijn", ing.getRekening(rekeningNr1).getEigenaar(), not(ing.getRekening(rekeningNr2).getEigenaar()));
     }
 
     /**
@@ -128,8 +126,8 @@ public class BankTest {
         System.out.println("BankTest - @Test: openRekeningOngeldigeWaarde()");
 
         // Foutieve invoeren
-        assertEquals("Bankrekening wordt geopend", -1, abn.openRekening("Karel", ""));
-        assertEquals("Bankrekening wordt geopend", -1, abn.openRekening("", "Weert"));
+        assertEquals("Bankrekening mag niet worden geopend", -1, abn.openRekening("Karel", ""));
+        assertEquals("Bankrekening (2) mag niet worden geopend", -1, abn.openRekening("", "Weert"));
     }
     
     /**
@@ -167,22 +165,22 @@ public class BankTest {
         System.out.println("BankTest - @Test: maakOver()");
         
         //Afgeschreven bedrag is groter dan het kredietlimiet
-        assertFalse("Geld overgemaakt", ing.maakOver(rekeningNr1, rekeningNr2, new Money(1000000, "€")));
+        assertFalse("Geld moet niet worden overgemaakt", ing.maakOver(rekeningNr1, rekeningNr2, new Money(1000000, "€")));
 
         //Afgeschreven bedrag is kleiner dan het kredietlimiet (moet dus werken)
-        assertTrue("Geld niet overgemaakt", ing.maakOver(rekeningNr1, rekeningNr2, new Money(10, "€")));
-        assertEquals("Hoeveelheid geld klopt niet", new Money(-10, "€"), ing.getRekening(rekeningNr1).getSaldo());
+        assertTrue("Geld moet worden overgemaakt", ing.maakOver(rekeningNr1, rekeningNr2, new Money(10, "€")));
+        assertEquals("Bedragen moeten gelijk zijn", new Money(-10, "€"), ing.getRekening(rekeningNr1).getSaldo());
 
         //Resultaat is dat het bedrag precies het kredietlimiet is
-        assertTrue("Geld niet overgemaakt", ing.maakOver(rekeningNr1, rekeningNr2, new Money(10000 - 10, "€")));
-        assertEquals("Hoeveelheid geld klopt niet", new Money(-10000, "€"), ing.getRekening(rekeningNr1).getSaldo());
+        assertTrue("Geld (2) moet worden overgemaakt", ing.maakOver(rekeningNr1, rekeningNr2, new Money(10000 - 10, "€")));
+        assertEquals("Bedragen (2) moeten gelijk zijn", new Money(-10000, "€"), ing.getRekening(rekeningNr1).getSaldo());
 
         //Balans herstellen beide rekeningen hebben €0,00
         ing.maakOver(rekeningNr2, rekeningNr1, new Money(10000, "€"));
-        assertEquals("Hoeveelheid geld niet gelijk", ing.getRekening(rekeningNr1).getSaldo(), ing.getRekening(rekeningNr2).getSaldo());
+        assertEquals("Bedragen moeten gelijk zijn aan 0", ing.getRekening(rekeningNr1).getSaldo(), ing.getRekening(rekeningNr2).getSaldo());
 
         //Resultaat is dat het bedrag net iets onder het kredietlimiet is
-        assertFalse("Onder het kredietlimiet", ing.maakOver(rekeningNr2, rekeningNr1, new Money(10000 + 1, "€")));
+        assertFalse("Geld (2) moet niet worden overgemaakt", ing.maakOver(rekeningNr2, rekeningNr1, new Money(10000 + 1, "€")));
     }
 
     /**
@@ -281,7 +279,7 @@ public class BankTest {
         int rekeningNummer = abn.openRekening("Karel", "Eindhoven");
         
         assertNull("Rekening mag niet bestaan", abn.getRekening(92340988));
-        assertNotNull("Geen rekening gevonden", abn.getRekening(rekeningNummer));
+        assertNotNull("Rekening moet bestaan", abn.getRekening(rekeningNummer));
     }
     
     /**
@@ -291,11 +289,11 @@ public class BankTest {
     @Test
     public void getName()
     {        
-        assertEquals("Naam niet gelijk", "ING", ing.getName());
-        assertEquals("Naam niet gelijk", "ABN", abn.getName());
+        assertEquals("Banknaam moet gelijk zijn aan ING", "ING", ing.getName());
+        assertEquals("Banknaam moet gelijk zijn aan ABN", "ABN", abn.getName());
         
         ICentraleBank centrale = new CentraleBank();
         IBank fortis = new Bank("    ", centrale);
-        assertEquals("Naam niet gelijk", "    ", fortis.getName());
+        assertEquals("Banknaam moet niet gelijk zijn", "    ", fortis.getName());
     }
 }

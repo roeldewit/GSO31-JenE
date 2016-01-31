@@ -21,13 +21,17 @@ public class BankierenTestRunner {
      */
     public static void main(String[] args) {
 	//Run the entire suite
-	Result result = JUnitCore.runClasses(SuiteBankieren.class);
+	Result result = JUnitCore.runClasses(SuiteBankieren.class, SuiteInternettoegang.class);
 
         //Report on all failures in the suite
         result.getFailures().stream().forEach((failure) -> {
             System.out.println("Status: " + failure.toString());
         });
+        System.out.println("-------------");
+        System.out.println("SAMENVATTING RESULTATEN");
         System.out.println("Aantal testen uitgevoerd: "+result.getRunCount());
+        System.out.println("Aantal testen succesvol: "+(result.getRunCount()-result.getFailureCount()));
+        System.out.println("Aantal testen gefaald: "+result.getFailureCount());
         System.exit(0);
     }
     
